@@ -1,0 +1,2 @@
+rootProject.name = "Material Looks XML"
+include ':app'
