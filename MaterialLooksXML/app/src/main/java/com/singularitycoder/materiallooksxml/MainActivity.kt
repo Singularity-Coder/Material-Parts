@@ -4,11 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +19,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setUpRecyclerView()
+    }
 
+    private fun setUpRecyclerView() {
         binding.rvMaterialComponents.apply {
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
             adapter = MaterialComponentAdapter(
@@ -63,13 +62,13 @@ class MainActivity : AppCompatActivity() {
         inner class MaterialComponentViewHolder(private val binding: ListItemComponentBinding) : RecyclerView.ViewHolder(binding.root) {
 
             fun bindItems(materialComponent: MaterialComponent) {
-                binding.ivImage.setImageResource(materialComponent.image)
-                binding.tvTitle.text = materialComponent.title
-                binding.tvSubTitle.text = materialComponent.subtitle
-                binding.tvLink.visibility = View.GONE
-
-                binding.root.setOnClickListener {
-                    onComponentClick?.invoke(adapterPosition)
+                binding.apply {
+                    ivImage.setImageResource(materialComponent.image)
+                    tvTitle.text = materialComponent.title
+                    tvSubTitle.text = materialComponent.subtitle
+                    tvLink.visibility = View.GONE
+                    onComponentClick ?: return
+                    root.setOnClickListener { onComponentClick.invoke(adapterPosition) }
                 }
             }
         }

@@ -12,5 +12,71 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <!-- <item name="materialTimePickerTheme">@style/ThemeOverlay.App.TimePicker</item>-->
+        <!-- <item name="textAppearanceButton">@style/TextAppearance.App.Button</item>-->
+        <!-- <item name="tabStyle">@style/Widget.App.TabLayout</item>-->
     </style>
+
+    <!-- 4dp - ShapeAppearance.MaterialComponents.SmallComponent - Buttons, fields, FAbs, chips etc -->
+    <!-- 8dp - ShapeAppearance.MaterialComponents.MediumComponent - Cards, dialogs, date picker container -->
+    <!-- 24dp - ShapeAppearance.MaterialComponents.LargeComponent - Bottom Sheets -->
+
+    <!-- TIME PICKERS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+    <!--    <style name="Widget.App.Chip" parent="Widget.MaterialComponents.TimePicker.Display">-->
+    <!--        <item name="android:textColor">@color/shrine_diplay_text_color</item>-->
+    <!--    </style>-->
+
+    <!--    <style name="Widget.App.TimePicker.Clock" parent="Widget.MaterialComponents.TimePicker.Clock">-->
+    <!--        <item name="clockFaceBackgroundColor">@color/...</item>-->
+    <!--        <item name="clockHandColor">@color/...</item>-->
+    <!--        <item name="clockNumberTextColor">@color/...</item>-->
+    <!--    </style>-->
+
+    <!-- TEXT FIELDS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+    <style name="CutSmall" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="CutButtonSmall" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeTopRight">8dp</item>
+    </style>
+
+    <style name="RoundSmall" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="RoundButtonSmall" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeTopLeft">8dp</item>
+        <item name="cornerSizeTopRight">8dp</item>
+    </style>
+
+    <!-- TABS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+<!--    <style name="TextAppearance.App.Button" parent="TextAppearance.MaterialComponents.Button">-->
+<!--        <item name="fontFamily">@font/rubik</item>-->
+<!--        <item name="android:fontFamily">@font/rubik</item>-->
+<!--    </style>-->
+
+<!--    <style name="Widget.App.TabLayout" parent="Widget.MaterialComponents.TabLayout">-->
+<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TabLayout</item>-->
+<!--        <item name="tabTextAppearance">@style/TextAppearance.App.Button</item>-->
+<!--    </style>-->
+
+<!--    <style name="ThemeOverlay.App.TabLayout" parent="">-->
+<!--        <item name="colorPrimary">@color/shrine_pink_900</item>-->
+<!--        <item name="colorSurface">@color/shrine_pink_light</item>-->
+<!--        <item name="colorOnSurface">@color/shrine_pink_900</item>-->
+<!--    </style>-->
+
 </resources>

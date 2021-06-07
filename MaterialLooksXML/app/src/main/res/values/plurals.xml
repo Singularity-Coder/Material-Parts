@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="tab_layout_1">
+        <item quantity="one">@string/tab_1</item>
+        <item quantity="other">@string/tab_others</item>
+    </plurals>
+</resources>
