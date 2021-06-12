@@ -23,11 +23,38 @@
 
         <!-- Effects all Snackbars -->
         <!-- <item name="snackbarButtonStyle">@style/Widget.App.SnackbarButton</item>-->
+
+        <!-- Effects all Sliders -->
+        <!-- <item name="sliderStyle">@style/Widget.App.Slider</item-->
     </style>
 
     <!-- 4dp - ShapeAppearance.MaterialComponents.SmallComponent - Buttons, fields, FAbs, chips etc -->
     <!-- 8dp - ShapeAppearance.MaterialComponents.MediumComponent - Cards, dialogs, date picker container -->
     <!-- 24dp - ShapeAppearance.MaterialComponents.LargeComponent - Bottom Sheets -->
+
+    <!-- SLIDERS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+    <!-- <style name="Widget.App.Slider" parent="Widget.MaterialComponents.Slider">-->
+    <!--     <item name="materialThemeOverlay">@style/ThemeOverlay.App.Slider</item>-->
+    <!--     <item name="labelStyle">@style/Widget.App.Tooltip</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="ThemeOverlay.App.Slider" parent="">-->
+    <!--     <item name="colorPrimary">@color/shrine_pink_100</item>-->
+    <!--     <item name="colorOnPrimary">@color/shrine_pink_900</item>-->
+    <!--     <item name="colorOnSurface">@color/shrine_pink_100</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">-->
+    <!--     <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>-->
+    <!--     <item name="backgroundTint">@color/shrine_pink_900</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="TextAppearance.App.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">-->
+    <!--     <item name="android:textColor">@color/shrine_pink_100</item>-->
+    <!--     <item name="fontFamily">@font/rubik</item>-->
+    <!--     <item name="android:fontFamily">@font/rubik</item>-->
+    <!-- </style>-->
 
     <!-- SNACKBARS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
 

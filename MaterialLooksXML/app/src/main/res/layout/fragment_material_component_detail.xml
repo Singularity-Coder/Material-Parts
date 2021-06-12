@@ -26,6 +26,10 @@
                 layout="@layout/layout_result" />
 
             <include
+                android:id="@+id/layout_sliders"
+                layout="@layout/layout_sliders" />
+
+            <include
                 android:id="@+id/layout_snackbars"
                 layout="@layout/layout_snackbars" />
 

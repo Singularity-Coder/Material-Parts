@@ -13,6 +13,8 @@ import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import com.google.android.material.slider.RangeSlider
+import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -24,6 +26,8 @@ import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_KEYB
 import com.google.android.material.timepicker.TimeFormat
 import com.singularitycoder.materiallooksxml.databinding.FragmentMaterialComponentDetailBinding
 import com.singularitycoder.materiallooksxml.tabs.DemoCollectionAdapter
+import java.text.NumberFormat
+import java.util.*
 
 class MaterialComponentDetailFragment : Fragment() {
 
@@ -55,6 +59,7 @@ class MaterialComponentDetailFragment : Fragment() {
 
     private fun setUpDefaults() {
         binding.apply {
+            layoutSliders.root.visibility = View.GONE
             layoutSnackbars.root.visibility = View.GONE
             layoutSwitches.root.visibility = View.GONE
             layoutTabs.root.visibility = View.GONE
@@ -159,7 +164,84 @@ class MaterialComponentDetailFragment : Fragment() {
     }
 
     private fun setUpSliders() {
+        context ?: return
+        binding.layoutSliders.root.visibility = View.VISIBLE
+        binding.layoutSliders.sliderContinuous.apply {
+            valueFrom = 0.0F
+            valueTo = 100.0F
+            value = 10.0F   // starting value
+            setLabelFormatter { value: Float -> "$value <<((" }
+            addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: Slider) {
+                    // Responds to when slider's touch event is being started
+                }
 
+                override fun onStopTrackingTouch(slider: Slider) {
+                    // Responds to when slider's touch event is being stopped
+                }
+            })
+            addOnChangeListener { slider, value, fromUser ->
+                // Responds to when slider's value is changed
+                binding.layoutResult.tvResult.text = "Continuous Slider value is ${value}"
+            }
+        }
+        binding.layoutSliders.sliderDiscreteRangeSelection.apply {
+            valueFrom = 0.0F
+            valueTo = 10.0F
+            stepSize = 1.0F
+            values = listOf(1.0F, 3.0F)   // starting values
+            setLabelFormatter { value: Float ->
+                val format = NumberFormat.getCurrencyInstance()
+                format.maximumFractionDigits = 0
+                format.currency = Currency.getInstance("USD")
+                format.format(value.toDouble())
+            }
+            addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
+                override fun onStartTrackingTouch(slider: RangeSlider) {
+                    // Responds to when slider's touch event is being started
+                }
+
+                override fun onStopTrackingTouch(slider: RangeSlider) {
+                    // Responds to when slider's touch event is being stopped
+                }
+            })
+            addOnChangeListener { rangeSlider, value, fromUser ->
+                // Responds to when slider's value is changed
+                binding.layoutResult.tvResult.text = "Discrete Range Selection Slider value is ${value}"
+            }
+        }
+        binding.layoutSliders.sliderCustom.apply {
+//            trackHeight
+//            trackTintList
+//            trackActiveTintList
+//            trackInactiveTintList
+//            thumbTintList
+//            thumbRadius
+//            setThumbRadiusResource(context.resources.getDimension(R.dimen.thumb_radius))
+//            setThumbElevationResource()
+//            thumbElevation
+//            haloTintList
+//            setHaloRadiusResource()
+//            haloRadius
+//            thumbStrokeColor
+//            setThumbStrokeColorResource()
+//            thumbStrokeWidth
+//            setThumbStrokeWidthResource()
+//            labelBehavior
+//            tickTintList
+//            tickActiveTintList
+//            tickInactiveTintList
+//            isTickVisible
+            addOnChangeListener { slider, value, fromUser ->
+                binding.layoutResult.tvResult.text = "Custom Slider value is ${value}"
+            }
+        }
+        binding.layoutSliders.sliderRangeSelectionCustom.apply {
+//            minSeparation
+            addOnChangeListener { slider, value, fromUser ->
+                binding.layoutResult.tvResult.text = "Custom Range Selection Slider value is ${value}"
+            }
+        }
     }
 
     private fun setUpSnackbars() {
@@ -177,7 +259,7 @@ class MaterialComponentDetailFragment : Fragment() {
                     binding.root,
                     "Email must contain only @. as special characters. Otherwise hackers can bust your email. You will then cry like a baby. So be careful!",
                     Snackbar.LENGTH_INDEFINITE
-                ).setAction("DON'T TELL ME AGAIN") { binding.layoutResult.tvResult.text = "\"DON'T TELL ME AGAIN Clicked!\"" }.show()
+                ).setAction("DON'T TELL ME AGAIN") { binding.layoutResult.tvResult.text = "\"DON'T TELL ME AGAIN\" Clicked!" }.show()
             }
             btnSnackBarCustom.setOnClickListener {
                 Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
