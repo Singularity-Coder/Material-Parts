@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_snack_bar_simple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Basic Snackbar" />
+
+    <Button
+        android:id="@+id/btn_snack_bar_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Snackbar with Action" />
+
+    <Button
+        android:id="@+id/btn_snack_bar_with_long_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Snackbar with Long Text" />
+
+    <Button
+        android:id="@+id/btn_snack_bar_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom Snackbar" />
+
+    <Button
+        android:id="@+id/btn_snack_bar_custom_position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Custom Snackbar Position" />
+
+</LinearLayout>

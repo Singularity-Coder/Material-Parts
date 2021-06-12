@@ -1,5 +1,7 @@
 package com.singularitycoder.materiallooksxml
 
+import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.format.DateFormat.is24HourFormat
@@ -11,6 +13,7 @@ import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -51,9 +54,13 @@ class MaterialComponentDetailFragment : Fragment() {
     }
 
     private fun setUpDefaults() {
-        binding.layoutTabs.root.visibility = View.GONE
-        binding.layoutTextFields.root.visibility = View.GONE
-        binding.layoutTimePicker.root.visibility = View.GONE
+        binding.apply {
+            layoutSnackbars.root.visibility = View.GONE
+            layoutSwitches.root.visibility = View.GONE
+            layoutTabs.root.visibility = View.GONE
+            layoutTextFields.root.visibility = View.GONE
+            layoutTimePickers.root.visibility = View.GONE
+        }
         binding.root.setOnClickListener { }
         binding.layoutHeader.apply {
             ivImage.setImageResource(component.image)
@@ -156,12 +163,72 @@ class MaterialComponentDetailFragment : Fragment() {
     }
 
     private fun setUpSnackbars() {
-
+        context ?: return
+        binding.layoutSnackbars.root.visibility = View.VISIBLE
+        binding.layoutSnackbars.apply {
+            btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.root, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
+            btnSnackBarAction.setOnClickListener {
+                Snackbar.make(binding.root, "Email deleted!", Snackbar.LENGTH_LONG)
+                    .setAction("UNDO") { binding.layoutResult.tvResult.text = "You undid email deletion!" }
+                    .show()
+            }
+            btnSnackBarWithLongText.setOnClickListener {
+                Snackbar.make(
+                    binding.root,
+                    "Email must contain only @. as special characters. Otherwise hackers can bust your email. You will then cry like a baby. So be careful!",
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction("DON'T TELL ME AGAIN") { binding.layoutResult.tvResult.text = "\"DON'T TELL ME AGAIN Clicked!\"" }.show()
+            }
+            btnSnackBarCustom.setOnClickListener {
+                Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("OK") { binding.layoutResult.tvResult.text = "You got it!" }
+                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.teal_300))
+                    .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.teal_900))
+                    .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                    .show()
+            }
+            btnSnackBarCustomPosition.setOnClickListener {
+                Snackbar.make(binding.root, "I am at a different place than usual. How strange!", Snackbar.LENGTH_LONG)
+                    .setAnchorView(btnSnackBarSimple)
+                    .show()
+            }
+        }
     }
 
+    @SuppressLint("ResourceType")
     private fun setUpSwitches() {
-        // on off switch
-        // switch with loader in the toggle
+        context ?: return
+        binding.layoutSwitches.root.visibility = View.VISIBLE
+        binding.layoutSwitches.apply {
+            switchBasic.isChecked = false
+            switchCustom.isChecked = true
+        }
+        binding.layoutSwitches.switchBasic.setOnCheckedChangeListener { buttonView, isChecked ->
+            binding.layoutResult.tvResult.text = "Basic Switch is ${if (isChecked) "On!" else "Off!"}"
+        }
+        binding.layoutSwitches.switchCustom.apply {
+            setOnCheckedChangeListener { buttonView, isChecked ->
+                binding.layoutResult.tvResult.text = "Custom Switch is ${if (isChecked) "On!" else "Off!"}"
+                if (isChecked) {
+                    thumbDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_stars_24)
+                    thumbTintList = ContextCompat.getColorStateList(requireContext(), R.color.purple_700)
+                    trackDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_dehaze_24)
+                    trackTintList = ContextCompat.getColorStateList(requireContext(), R.color.teal_200)
+                    text = "Custom Switch is On!"
+                    setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.purple_700))
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) setTextAppearance(android.R.attr.textAppearanceLarge)
+                } else {
+                    thumbDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_stars_24)
+                    thumbTintList = ContextCompat.getColorStateList(requireContext(), android.R.color.darker_gray)
+                    trackDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_dehaze_24)
+                    trackTintList = ContextCompat.getColorStateList(requireContext(), android.R.color.darker_gray)
+                    text = "Custom Switch is Off!"
+                    setTextColor(ContextCompat.getColorStateList(requireContext(), android.R.color.darker_gray))
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) setTextAppearance(android.R.attr.textAppearanceSmall)
+                }
+            }
+        }
     }
 
     private fun setUpTabs() {
@@ -265,9 +332,9 @@ class MaterialComponentDetailFragment : Fragment() {
 
     private fun setUpTimePickers() {
         context ?: return
-        binding.layoutTimePicker.root.visibility = View.VISIBLE
+        binding.layoutTimePickers.root.visibility = View.VISIBLE
         val clockFormat = if (is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
-        binding.layoutTimePicker.btnTimePicker.setOnClickListener {
+        binding.layoutTimePickers.btnTimePicker.setOnClickListener {
             val timePicker = MaterialTimePicker.Builder()
                 .setTitleText("Select Appointment time")
                 .setTimeFormat(TimeFormat.CLOCK_12H)
@@ -275,18 +342,16 @@ class MaterialComponentDetailFragment : Fragment() {
                 .setMinute(10)
                 .build()
             timePicker.show(parentFragmentManager, "tag_time_picker")
-            timePicker.apply {
-                addOnPositiveButtonClickListener {
-                    binding.layoutResult.tvResult.text = """
+            timePicker.addOnPositiveButtonClickListener {
+                binding.layoutResult.tvResult.text = """
                     Hours: ${timePicker.hour}
                     Minutes: ${timePicker.minute}
                     InputMode: ${timePicker.inputMode}
                 """.trimIndent()
-                }
-                addOnNegativeButtonClickListener { binding.layoutResult.tvResult.text = "You Cancelled!" }
             }
+            timePicker.addOnNegativeButtonClickListener { binding.layoutResult.tvResult.text = "You Cancelled!" }
         }
-        binding.layoutTimePicker.btnTimePickerKeyboardOnly.setOnClickListener {
+        binding.layoutTimePickers.btnTimePickerKeyboardOnly.setOnClickListener {
             val timePickerKeyboardOnly = MaterialTimePicker.Builder()
                 .setTitleText("Select Appointment time")
                 .setInputMode(INPUT_MODE_KEYBOARD)
@@ -295,16 +360,14 @@ class MaterialComponentDetailFragment : Fragment() {
                 .setMinute(10)
                 .build()
             timePickerKeyboardOnly.show(parentFragmentManager, "tag_time_picker_keyboard_only")
-            timePickerKeyboardOnly.apply {
-                addOnPositiveButtonClickListener {
-                    binding.layoutResult.tvResult.text = """
+            timePickerKeyboardOnly.addOnPositiveButtonClickListener {
+                binding.layoutResult.tvResult.text = """
                     Hours: ${timePickerKeyboardOnly.hour}
                     Minutes: ${timePickerKeyboardOnly.minute}
                     InputMode: ${timePickerKeyboardOnly.inputMode}
                 """.trimIndent()
-                }
-                addOnNegativeButtonClickListener { binding.layoutResult.tvResult.text = "You Cancelled!" }
             }
+            timePickerKeyboardOnly.addOnNegativeButtonClickListener { binding.layoutResult.tvResult.text = "You Cancelled!" }
         }
     }
 }

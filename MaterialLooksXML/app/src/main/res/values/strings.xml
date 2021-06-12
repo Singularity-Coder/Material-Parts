@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Material Components</string>
+    <string name="app_name">Material Parts</string>
 
     <string name="tab_1">Tab 1</string>
     <string name="tab_others">%d Tabs</string>
