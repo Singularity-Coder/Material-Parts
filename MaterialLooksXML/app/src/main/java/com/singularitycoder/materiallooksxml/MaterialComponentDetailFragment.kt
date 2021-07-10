@@ -1,6 +1,7 @@
 package com.singularitycoder.materiallooksxml
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -10,9 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -24,6 +27,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_KEYBOARD
 import com.google.android.material.timepicker.TimeFormat
+import com.singularitycoder.materiallooksxml.Constants.MaterialComponents.*
 import com.singularitycoder.materiallooksxml.databinding.FragmentMaterialComponentDetailBinding
 import com.singularitycoder.materiallooksxml.tabs.DemoCollectionAdapter
 import java.text.NumberFormat
@@ -45,9 +49,17 @@ class MaterialComponentDetailFragment : Fragment() {
     private var position: Int = 0
     private lateinit var demoCollectionAdapter: DemoCollectionAdapter
     private lateinit var component: MaterialComponent
+    private lateinit var myContext: Context
+    private lateinit var myActivity: MainActivity
     private lateinit var binding: FragmentMaterialComponentDetailBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        myContext = context
+        myActivity = context as MainActivity
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMaterialComponentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -59,6 +71,7 @@ class MaterialComponentDetailFragment : Fragment() {
 
     private fun setUpDefaults() {
         binding.apply {
+            layoutSheetsBottom.root.visibility = View.GONE
             layoutSliders.root.visibility = View.GONE
             layoutSnackbars.root.visibility = View.GONE
             layoutSwitches.root.visibility = View.GONE
@@ -74,28 +87,28 @@ class MaterialComponentDetailFragment : Fragment() {
             tvLink.text = component.link
         }
         when (component.title) {
-            Constants.MaterialComponents.APP_BAR_BOTTOM.title -> setUpAppBarBottom()
-            Constants.MaterialComponents.APP_BAR_TOP.title -> setUpAppBarTop()
-            Constants.MaterialComponents.BOTTOM_NAVIGATION.title -> setUpBottomNavigation()
-            Constants.MaterialComponents.BUTTONS.title -> setUpButtons()
-            Constants.MaterialComponents.FLOATING_ACTION_BUTTON.title -> setUpFloatingActionButton()
-            Constants.MaterialComponents.CARDS.title -> setUpCards()
-            Constants.MaterialComponents.CHECK_BOXES.title -> setUpCheckBoxes()
-            Constants.MaterialComponents.CHIPS.title -> setUpChips()
-            Constants.MaterialComponents.DATE_PICKERS.title -> setUpDatePickers()
-            Constants.MaterialComponents.DIALOGS.title -> setUpDialogs()
-            Constants.MaterialComponents.MENUS.title -> setUpMenus()
-            Constants.MaterialComponents.NAVIGATION_DRAWER.title -> setUpNavigationDrawer()
-            Constants.MaterialComponents.NAVIGATION_RAIL.title -> setUpNavigationRail()
-            Constants.MaterialComponents.PROGRESS_INDICATORS.title -> setUpProgressIndicators()
-            Constants.MaterialComponents.RADIO_BUTTONS.title -> setUpRadioButtons()
-            Constants.MaterialComponents.SHEETS_BOTTOM.title -> setUpSheetsBottom()
-            Constants.MaterialComponents.SLIDERS.title -> setUpSliders()
-            Constants.MaterialComponents.SNACKBARS.title -> setUpSnackbars()
-            Constants.MaterialComponents.SWITCHES.title -> setUpSwitches()
-            Constants.MaterialComponents.TABS.title -> setUpTabs()
-            Constants.MaterialComponents.TEXT_FIELDS.title -> setUpTextFields()
-            Constants.MaterialComponents.TIME_PICKERS.title -> setUpTimePickers()
+            APP_BAR_BOTTOM.title -> setUpAppBarBottom()
+            APP_BAR_TOP.title -> setUpAppBarTop()
+            BOTTOM_NAVIGATION.title -> setUpBottomNavigation()
+            BUTTONS.title -> setUpButtons()
+            FLOATING_ACTION_BUTTON.title -> setUpFloatingActionButton()
+            CARDS.title -> setUpCards()
+            CHECK_BOXES.title -> setUpCheckBoxes()
+            CHIPS.title -> setUpChips()
+            DATE_PICKERS.title -> setUpDatePickers()
+            DIALOGS.title -> setUpDialogs()
+            MENUS.title -> setUpMenus()
+            NAVIGATION_DRAWER.title -> setUpNavigationDrawer()
+            NAVIGATION_RAIL.title -> setUpNavigationRail()
+            PROGRESS_INDICATORS.title -> setUpProgressIndicators()
+            RADIO_BUTTONS.title -> setUpRadioButtons()
+            SHEETS_BOTTOM.title -> setUpSheetsBottom()
+            SLIDERS.title -> setUpSliders()
+            SNACKBARS.title -> setUpSnackbars()
+            SWITCHES.title -> setUpSwitches()
+            TABS.title -> setUpTabs()
+            TEXT_FIELDS.title -> setUpTextFields()
+            TIME_PICKERS.title -> setUpTimePickers()
         }
     }
 
@@ -160,11 +173,27 @@ class MaterialComponentDetailFragment : Fragment() {
     }
 
     private fun setUpSheetsBottom() {
+        // Standard - Like music player strip
+        // Modal - List Dialog replacement
+        // Expanding - G Maps, shopping kart, unread messages
 
+        binding.layoutSheetsBottom.root.visibility = View.VISIBLE
+        val modalBottomSheet = binding.layoutSheetsBottom.modalBottomSheet.root
+        val bottomSheetBehavior = BottomSheetBehavior.from(modalBottomSheet)
+        binding.layoutSheetsBottom.btnModalBottomSheet.setOnClickListener {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+            } else {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+            }
+        }
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
+            override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
+        })
     }
 
     private fun setUpSliders() {
-        context ?: return
         binding.layoutSliders.root.visibility = View.VISIBLE
         binding.layoutSliders.sliderContinuous.apply {
             valueFrom = 0.0F
@@ -182,7 +211,7 @@ class MaterialComponentDetailFragment : Fragment() {
             })
             addOnChangeListener { slider, value, fromUser ->
                 // Responds to when slider's value is changed
-                binding.layoutResult.tvResult.text = "Continuous Slider value is ${value}"
+                binding.layoutResult.tvResult.text = "Continuous Slider value is $value"
             }
         }
         binding.layoutSliders.sliderDiscreteRangeSelection.apply {
@@ -217,7 +246,7 @@ class MaterialComponentDetailFragment : Fragment() {
 //            trackInactiveTintList
 //            thumbTintList
 //            thumbRadius
-//            setThumbRadiusResource(context.resources.getDimension(R.dimen.thumb_radius))
+//            setThumbRadiusResource(myContext.resources.getDimension(R.dimen.thumb_radius))
 //            setThumbElevationResource()
 //            thumbElevation
 //            haloTintList
@@ -233,19 +262,18 @@ class MaterialComponentDetailFragment : Fragment() {
 //            tickInactiveTintList
 //            isTickVisible
             addOnChangeListener { slider, value, fromUser ->
-                binding.layoutResult.tvResult.text = "Custom Slider value is ${value}"
+                binding.layoutResult.tvResult.text = "Custom Slider value is $value"
             }
         }
         binding.layoutSliders.sliderRangeSelectionCustom.apply {
 //            minSeparation
             addOnChangeListener { slider, value, fromUser ->
-                binding.layoutResult.tvResult.text = "Custom Range Selection Slider value is ${value}"
+                binding.layoutResult.tvResult.text = "Custom Range Selection Slider value is $value"
             }
         }
     }
 
     private fun setUpSnackbars() {
-        context ?: return
         binding.layoutSnackbars.root.visibility = View.VISIBLE
         binding.layoutSnackbars.apply {
             btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.root, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
@@ -276,11 +304,18 @@ class MaterialComponentDetailFragment : Fragment() {
                     .show()
             }
         }
+
+        fun showMultiPurposeSnackBar(view: View, @StringRes message: Int, anchorView: View? = null, duration: Int = Snackbar.LENGTH_SHORT) {
+            Snackbar.make(view, message, duration).apply {
+                this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+                if (null != anchorView) this.anchorView = anchorView
+                this.show()
+            }
+        }
     }
 
     @SuppressLint("ResourceType")
     private fun setUpSwitches() {
-        context ?: return
         binding.layoutSwitches.root.visibility = View.VISIBLE
         binding.layoutSwitches.apply {
             switchBasic.isChecked = false
@@ -324,7 +359,6 @@ class MaterialComponentDetailFragment : Fragment() {
         // collapse toolbar & tabs
         // tabs with notification badges
 
-        context ?: return
         binding.layoutTabs.root.visibility = View.VISIBLE
 
         demoCollectionAdapter = DemoCollectionAdapter(this)
@@ -371,7 +405,6 @@ class MaterialComponentDetailFragment : Fragment() {
     }
 
     private fun setUpTextFields() {
-        context ?: return
         binding.layoutTextFields.root.visibility = View.VISIBLE
         val professionAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Constants.professionArray)
         val hobbyAdapter = ArrayAdapter(requireContext(), R.layout.list_item_custom_array_adapter, Constants.hobbyArray)
@@ -413,9 +446,8 @@ class MaterialComponentDetailFragment : Fragment() {
     }
 
     private fun setUpTimePickers() {
-        context ?: return
         binding.layoutTimePickers.root.visibility = View.VISIBLE
-        val clockFormat = if (is24HourFormat(context)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
+        val clockFormat = if (is24HourFormat(myContext)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         binding.layoutTimePickers.btnTimePicker.setOnClickListener {
             val timePicker = MaterialTimePicker.Builder()
                 .setTitleText("Select Appointment time")

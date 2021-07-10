@@ -26,6 +26,10 @@
                 layout="@layout/layout_result" />
 
             <include
+                android:id="@+id/layout_sheets_bottom"
+                layout="@layout/layout_sheets_bottom" />
+
+            <include
                 android:id="@+id/layout_sliders"
                 layout="@layout/layout_sliders" />
 

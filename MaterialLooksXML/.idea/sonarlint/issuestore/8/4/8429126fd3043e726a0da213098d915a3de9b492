@@ -1,21 +1,20 @@
 
-Ckotlin:S125Ö"Remove this commented out code.(€§À•øÿÿÿÿ8Ö‹‰‡ /
-wkotlin:S1186f"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ñ‚ªÿÿÿÿÿ
-rkotlin:S1186j"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ŠÀ²­
-wkotlin:S1186n"ZAdd a nested comment explaining why this function is empty or complete the implementation.(µİŠÇùÿÿÿÿ
-wkotlin:S1186r"ZAdd a nested comment explaining why this function is empty or complete the implementation.(Ì³ºŞùÿÿÿÿ
-rkotlin:S1186v"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¾ĞŞÍ
-wkotlin:S1186z"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¥§¤ãüÿÿÿÿ
-rkotlin:S1186~"ZAdd a nested comment explaining why this function is empty or complete the implementation.(©½Ş§
-xkotlin:S1186‚"ZAdd a nested comment explaining why this function is empty or complete the implementation.(“Èº™üÿÿÿÿ
-xkotlin:S1186†"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¼³¯İÿÿÿÿÿ
-skotlin:S1186Š"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÿˆ
-xkotlin:S1186"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ääÿøûÿÿÿÿ
-skotlin:S1186’"ZAdd a nested comment explaining why this function is empty or complete the implementation.(°»’”
-xkotlin:S1186–"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ˆÛÅùûÿÿÿÿ
-skotlin:S1186š"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ü§å›
-xkotlin:S1186"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÚÓ¤»úÿÿÿÿ
-skotlin:S1186¢"ZAdd a nested comment explaining why this function is empty or complete the implementation.(áˆ÷ğ
-kkotlin:S3776š"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(óØ´ƒ
-Hkotlin:S1481Ï"*Remove this unused "badge" local variable.(à“©ûÿÿÿÿ
-Hkotlin:S1656Ñ"/Remove or correct this useless self-assignment.(£Ó¾
+<kotlin:S125ó"Remove this commented out code.(€§À•øÿÿÿÿ
+wkotlin:S1186s"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ñ‚ªÿÿÿÿÿ
+rkotlin:S1186w"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ŠÀ²­
+wkotlin:S1186{"ZAdd a nested comment explaining why this function is empty or complete the implementation.(µİŠÇùÿÿÿÿ
+wkotlin:S1186"ZAdd a nested comment explaining why this function is empty or complete the implementation.(Ì³ºŞùÿÿÿÿ
+skotlin:S1186ƒ"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¾ĞŞÍ
+xkotlin:S1186‡"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¥§¤ãüÿÿÿÿ
+skotlin:S1186‹"ZAdd a nested comment explaining why this function is empty or complete the implementation.(©½Ş§
+xkotlin:S1186"ZAdd a nested comment explaining why this function is empty or complete the implementation.(“Èº™üÿÿÿÿ
+xkotlin:S1186“"ZAdd a nested comment explaining why this function is empty or complete the implementation.(¼³¯İÿÿÿÿÿ
+skotlin:S1186—"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÿˆ
+xkotlin:S1186›"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ääÿøûÿÿÿÿ
+skotlin:S1186Ÿ"ZAdd a nested comment explaining why this function is empty or complete the implementation.(°»’”
+xkotlin:S1186£"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ˆÛÅùûÿÿÿÿ
+skotlin:S1186§"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ü§å›
+kotlin:S1186«"ZAdd a nested comment explaining why this function is empty or complete the implementation.(ÚÓ¤»úÿÿÿÿ8şã‹©/
+kkotlin:S3776¾"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(óØ´ƒ
+Hkotlin:S1481ñ"*Remove this unused "badge" local variable.(à“©ûÿÿÿÿ
+Hkotlin:S1656ó"/Remove or correct this useless self-assignment.(£Ó¾
