@@ -3,6 +3,7 @@ package com.singularitycoder.materiallooksxml
 object Constants {
 
     const val ARG_OBJECT = "object"
+    const val TAG_MODAL_BOTTOM_SHEET = "MODAL_BOTTOM_SHEET"
     val professionArray = listOf("Android Developer", "Data Scientist", "Otaku", "Rocket Scientist", "Physicist", "Mathematician")
     val hobbyArray = listOf("Meditation", "Yoga", "Computer Programming", "Hacking", "3D Animation", "Story Telling", "Graphic Design", "Inventing")
     val materialComponentList = ArrayList<MaterialComponent>()

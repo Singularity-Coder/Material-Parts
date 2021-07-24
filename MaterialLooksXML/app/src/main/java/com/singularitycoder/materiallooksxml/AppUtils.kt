@@ -5,24 +5,25 @@ import android.graphics.drawable.Drawable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TimingLogger
+import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
-object AppUtils {
-
-    fun logExecutionTime(tag: String, label: String, vararg methods: () -> Any) {
-        val timings = TimingLogger(tag, label).apply {
-            if (methods.isNotEmpty()) methods[0].invoke()
-            addSplit("stage 1 of $label")
-            if (methods.size > 1) methods[1].invoke()
-            addSplit("stage 2 of $label")
-            dumpToLog()
-        }
+fun logExecutionTime(tag: String, label: String, vararg methods: () -> Any) {
+    val timings = TimingLogger(tag, label).apply {
+        if (methods.isNotEmpty()) methods[0].invoke()
+        addSplit("stage 1 of $label")
+        if (methods.size > 1) methods[1].invoke()
+        addSplit("stage 2 of $label")
+        dumpToLog()
     }
 }
 
@@ -79,26 +80,41 @@ infix fun String.suffixWith(str: String): String = "$this$str"
 fun TextView.showHideIcon(
     context: Context,
     showTick: Boolean,
-    @DrawableRes icon: Int,
-    @ColorRes iconColor: Int,
+    @DrawableRes icon1: Int = android.R.drawable.ic_delete,
+    @DrawableRes icon2: Int = android.R.drawable.ic_delete,
+    @DrawableRes icon3: Int = android.R.drawable.ic_delete,
+    @DrawableRes icon4: Int = android.R.drawable.ic_delete,
+    @ColorRes iconColor1: Int = android.R.color.white,
+    @ColorRes iconColor2: Int = android.R.color.white,
+    @ColorRes iconColor3: Int = android.R.color.white,
+    @ColorRes iconColor4: Int = android.R.color.white,
     direction: Int
 ) {
     val left = 1
     val top = 2
     val right = 3
     val bottom = 4
-    val drawable = ContextCompat.getDrawable(context, icon)?.changeColor(context = context, color = iconColor)
+    val leftRight = 5
+    val topBottom = 6
+
+    val drawable1 = ContextCompat.getDrawable(context, icon1)?.changeColor(context = context, color = iconColor1)
+    val drawable2 = ContextCompat.getDrawable(context, icon2)?.changeColor(context = context, color = iconColor2)
+    val drawable3 = ContextCompat.getDrawable(context, icon3)?.changeColor(context = context, color = iconColor3)
+    val drawable4 = ContextCompat.getDrawable(context, icon4)?.changeColor(context = context, color = iconColor4)
+
     if (showTick) {
         when (direction) {
-            left -> this.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
-            top -> this.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
-            right -> this.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable, null)
-            bottom -> this.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable)
+            left -> this.setCompoundDrawablesWithIntrinsicBounds(drawable1, null, null, null)
+            top -> this.setCompoundDrawablesWithIntrinsicBounds(null, drawable2, null, null)
+            right -> this.setCompoundDrawablesWithIntrinsicBounds(null, null, drawable3, null)
+            bottom -> this.setCompoundDrawablesWithIntrinsicBounds(null, null, null, drawable4)
+            leftRight -> this.setCompoundDrawablesWithIntrinsicBounds(drawable1, null, drawable3, null)
+            topBottom -> this.setCompoundDrawablesWithIntrinsicBounds(null, drawable2, null, drawable4)
         }
     } else this.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
 }
 
-fun Drawable.changeColor(
+private fun Drawable.changeColor(
     context: Context,
     @ColorRes color: Int
 ): Drawable {
@@ -106,5 +122,18 @@ fun Drawable.changeColor(
     val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable)
     DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, color))
     return this
+}
+
+fun showSnackBar(
+    view: View,
+    @StringRes message: Int,
+    anchorView: View? = null,
+    duration: Int = Snackbar.LENGTH_SHORT
+) {
+    Snackbar.make(view, message, duration).apply {
+        this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
+        if (null != anchorView) this.anchorView = anchorView
+        this.show()
+    }
 }
 

@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             adapter = MaterialComponentAdapter(
                 materialComponentList = Constants.materialComponentList,
                 onComponentClick = { position: Int ->
-                    val fragment = MaterialComponentDetailFragment.newInstance(position = position, component = Constants.materialComponentList[position])
+                    val fragment = MaterialComponentDetailFragment(component = Constants.materialComponentList[position])
                     supportFragmentManager.beginTransaction().apply {
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         add(binding.container.id, fragment)

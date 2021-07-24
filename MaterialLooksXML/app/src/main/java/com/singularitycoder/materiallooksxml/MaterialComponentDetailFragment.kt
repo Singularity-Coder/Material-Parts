@@ -11,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -28,30 +30,23 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_KEYBOARD
 import com.google.android.material.timepicker.TimeFormat
 import com.singularitycoder.materiallooksxml.Constants.MaterialComponents.*
+import com.singularitycoder.materiallooksxml.Constants.TAG_MODAL_BOTTOM_SHEET
 import com.singularitycoder.materiallooksxml.databinding.FragmentMaterialComponentDetailBinding
+import com.singularitycoder.materiallooksxml.databinding.ItemBottomSheetBinding
+import com.singularitycoder.materiallooksxml.sheetsbottom.ModalBottomSheetDialogFragment
 import com.singularitycoder.materiallooksxml.tabs.DemoCollectionAdapter
 import java.text.NumberFormat
 import java.util.*
 
-class MaterialComponentDetailFragment : Fragment() {
+class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
-    companion object {
-        @JvmStatic
-        fun newInstance(
-            position: Int,
-            component: MaterialComponent
-        ) = MaterialComponentDetailFragment().apply {
-            this.position = position
-            this.component = component
-        }
-    }
-
-    private var position: Int = 0
     private lateinit var demoCollectionAdapter: DemoCollectionAdapter
-    private lateinit var component: MaterialComponent
     private lateinit var myContext: Context
     private lateinit var myActivity: MainActivity
     private lateinit var binding: FragmentMaterialComponentDetailBinding
+
+    // Fragments must have public no-arg constructor
+    constructor() : this(MaterialComponent(0, "", "", ""))
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -175,22 +170,72 @@ class MaterialComponentDetailFragment : Fragment() {
     private fun setUpSheetsBottom() {
         // Standard - Like music player strip
         // Modal - List Dialog replacement
-        // Expanding - G Maps, shopping kart, unread messages
+        // Persistent - G Maps, shopping kart, unread messages
 
         binding.layoutSheetsBottom.root.visibility = View.VISIBLE
-        val modalBottomSheet = binding.layoutSheetsBottom.modalBottomSheet.root
-        val bottomSheetBehavior = BottomSheetBehavior.from(modalBottomSheet)
-        binding.layoutSheetsBottom.btnModalBottomSheet.setOnClickListener {
+        binding.layoutBottomSheet.root.visibility = View.VISIBLE
+
+        for (i in 1..20) {
+            val itemBinding = ItemBottomSheetBinding.inflate(LayoutInflater.from(myContext), binding.layoutBottomSheet.llSongs, false)
+            itemBinding.root.text = "My Song $i"
+            binding.layoutBottomSheet.llSongs.addView(itemBinding.root)
+        }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet.root).apply {
+            addBottomSheetCallback(object : BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_HIDDEN -> binding.layoutResult.tvResult.text = "STATE HIDDEN"
+                        BottomSheetBehavior.STATE_EXPANDED -> {
+                            binding.layoutResult.tvResult.text = "STATE EXPANDED"
+                            binding.layoutSheetsBottom.btnShowPersistentBottomSheet.text = "Hide Persistent Bottom Sheet"
+                            binding.layoutBottomSheet.llBottomSheetHeader.findViewById<TextView>(R.id.tv_song).showHideIcon(
+                                context = myContext,
+                                showTick = true,
+                                icon1 = R.drawable.ic_baseline_play_arrow_24,
+                                icon3 = R.drawable.ic_baseline_keyboard_arrow_down_24,
+                                iconColor1 = R.color.purple_500,
+                                iconColor3 = R.color.purple_500,
+                                direction = 5
+                            )
+                        }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED -> binding.layoutResult.tvResult.text = "STATE HALF EXPANDED"
+                        BottomSheetBehavior.STATE_COLLAPSED -> {
+                            binding.layoutResult.tvResult.text = "STATE COLLAPSED"
+                            binding.layoutSheetsBottom.btnShowPersistentBottomSheet.text = "Show Persistent Bottom Sheet"
+                            binding.layoutBottomSheet.llBottomSheetHeader.findViewById<TextView>(R.id.tv_song).showHideIcon(
+                                context = myContext,
+                                showTick = true,
+                                icon1 = R.drawable.ic_baseline_pause_24,
+                                icon3 = R.drawable.ic_baseline_keyboard_arrow_up_24,
+                                iconColor1 = R.color.purple_500,
+                                iconColor3 = R.color.purple_500,
+                                direction = 5
+                            )
+                        }
+                        BottomSheetBehavior.STATE_DRAGGING -> binding.layoutResult.tvResult.text = "STATE DRAGGING"
+                        BottomSheetBehavior.STATE_SETTLING -> binding.layoutResult.tvResult.text = "STATE SETTLING"
+                        else -> binding.layoutResult.tvResult.text = "Persistent Bottom Sheet State"
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
+            })
+        }
+
+        binding.layoutSheetsBottom.btnShowPersistentBottomSheet.setOnClickListener {
             if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             } else {
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) = Unit
-            override fun onSlide(bottomSheet: View, slideOffset: Float) = Unit
-        })
+
+        binding.layoutSheetsBottom.btnShowModalBottomSheet.setOnClickListener {
+            ModalBottomSheetDialogFragment(onBottomSheetItemClickListener = { it: String ->
+                binding.layoutResult.tvResult.text = it.plus(" Selected")
+            }).show(myActivity.supportFragmentManager, TAG_MODAL_BOTTOM_SHEET)
+        }
     }
 
     private fun setUpSliders() {
@@ -292,10 +337,10 @@ class MaterialComponentDetailFragment : Fragment() {
             btnSnackBarCustom.setOnClickListener {
                 Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
                     .setAction("OK") { binding.layoutResult.tvResult.text = "You got it!" }
-                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.teal_300))
+                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.teal_100))
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.teal_900))
-                    .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.teal_700))
+                    .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.teal_900))
                     .show()
             }
             btnSnackBarCustomPosition.setOnClickListener {
@@ -391,15 +436,9 @@ class MaterialComponentDetailFragment : Fragment() {
         })
 
         TabLayoutMediator(binding.layoutTabs.tabLayout1, binding.layoutTabs.viewPager) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = "lable ${position + 1}"
-                    tab.icon = requireContext().getDrawable(R.drawable.ic_baseline_alternate_email_24)
-                }
-                1 -> {
-                    tab.text = "lable ${position + 1}"
-                    tab.icon = requireContext().getDrawable(R.drawable.ic_baseline_info_24)
-                }
+            for (i in 1..10) {
+                tab.text = "tab ${position + 1}"
+                tab.icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_alternate_email_24)
             }
         }.attach()
     }

@@ -28,6 +28,16 @@
         <!-- <item name="sliderStyle">@style/Widget.App.Slider</item-->
     </style>
 
+    <style name="ButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawablePadding">32dp</item>
+        <item name="android:background">?selectableItemBackground</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/title_color</item>
+    </style>
+
     <!-- 4dp - ShapeAppearance.MaterialComponents.SmallComponent - Buttons, fields, FAbs, chips etc -->
     <!-- 8dp - ShapeAppearance.MaterialComponents.MediumComponent - Cards, dialogs, date picker container -->
     <!-- 24dp - ShapeAppearance.MaterialComponents.LargeComponent - Bottom Sheets -->

@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    tools:context=".MaterialComponentDetailFragment">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        tools:context=".MaterialComponentDetailFragment">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <include
-                android:id="@+id/layout_header"
-                layout="@layout/list_item_component" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-            <include
-                android:id="@+id/layout_result"
-                layout="@layout/layout_result" />
+                <include
+                    android:id="@+id/layout_header"
+                    layout="@layout/list_item_component" />
 
-            <include
-                android:id="@+id/layout_sheets_bottom"
-                layout="@layout/layout_sheets_bottom" />
+                <include
+                    android:id="@+id/layout_result"
+                    layout="@layout/layout_result" />
 
-            <include
-                android:id="@+id/layout_sliders"
-                layout="@layout/layout_sliders" />
+                <include
+                    android:id="@+id/layout_sheets_bottom"
+                    layout="@layout/layout_sheets_bottom" />
 
-            <include
-                android:id="@+id/layout_snackbars"
-                layout="@layout/layout_snackbars" />
+                <include
+                    android:id="@+id/layout_sliders"
+                    layout="@layout/layout_sliders" />
 
-            <include
-                android:id="@+id/layout_switches"
-                layout="@layout/layout_switches" />
+                <include
+                    android:id="@+id/layout_snackbars"
+                    layout="@layout/layout_snackbars" />
 
-            <include
-                android:id="@+id/layout_tabs"
-                layout="@layout/layout_tabs" />
+                <include
+                    android:id="@+id/layout_switches"
+                    layout="@layout/layout_switches" />
 
-            <include
-                android:id="@+id/layout_text_fields"
-                layout="@layout/layout_text_fields" />
+                <include
+                    android:id="@+id/layout_tabs"
+                    layout="@layout/layout_tabs" />
 
-            <include
-                android:id="@+id/layout_time_pickers"
-                layout="@layout/layout_time_pickers" />
+                <include
+                    android:id="@+id/layout_text_fields"
+                    layout="@layout/layout_text_fields" />
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                <include
+                    android:id="@+id/layout_time_pickers"
+                    layout="@layout/layout_time_pickers" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/layout_bottom_sheet"
+        layout="@layout/layout_bottom_sheet"
+        android:visibility="gone" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

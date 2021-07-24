@@ -7,7 +7,7 @@ import com.singularitycoder.materiallooksxml.Constants
 
 class DemoCollectionAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = 100
+    override fun getItemCount(): Int = 10
 
     override fun createFragment(position: Int): Fragment {
         return DummyTabFragment().apply {
