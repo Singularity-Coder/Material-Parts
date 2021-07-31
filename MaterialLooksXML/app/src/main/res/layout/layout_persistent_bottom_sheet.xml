@@ -8,6 +8,7 @@
     android:orientation="vertical"
     app:behavior_hideable="false"
     app:behavior_peekHeight="60dp"
+    app:behavior_skipCollapsed="false"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <!--app:behavior_hideable="false" boolean true means sheet can be hidden by drag down action-->
@@ -33,7 +34,7 @@
             android:drawableTint="@color/purple_500"
             android:fontFamily="sans-serif-light"
             android:text="What a wonderful world"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textColor="@color/purple_700" />
     </LinearLayout>
 

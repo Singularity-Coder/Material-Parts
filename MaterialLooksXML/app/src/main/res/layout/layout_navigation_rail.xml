@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="horizontal">
+
+    <com.google.android.material.navigationrail.NavigationRailView
+        android:id="@+id/navigation_rail"
+        style="@style/Widget.MaterialComponents.NavigationRailView.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="384dp"
+        app:headerLayout="@layout/navigation_rail_fab"
+        app:labelVisibilityMode="selected"
+        app:menu="@menu/navigation_rail_menu" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="384dp"
+        android:background="@color/purple_50"
+        android:layout_marginStart="8dp" />
+
+</LinearLayout>

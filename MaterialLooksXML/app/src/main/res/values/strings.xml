@@ -3,4 +3,6 @@
 
     <string name="tab_1">Tab 1</string>
     <string name="tab_others">%d Tabs</string>
+    <string name="custom_radio_message">Custom Radio Button Selected</string>
+    <string name="finished_downloading">Finished Downloading!</string>
 </resources>

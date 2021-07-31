@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                     val fragment = MaterialComponentDetailFragment(component = Constants.materialComponentList[position])
                     supportFragmentManager.beginTransaction().apply {
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        add(binding.container.id, fragment)
+                        add(binding.clMainActivityRoot.id, fragment)
                         addToBackStack(null)
                         commit()
                     }

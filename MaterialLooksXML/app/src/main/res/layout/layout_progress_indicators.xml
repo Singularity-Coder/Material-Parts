@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/linear_progress_indicator"
+        style="@style/Widget.MaterialComponents.LinearProgressIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:indeterminate="true"
+        android:indeterminateBehavior="repeat"
+        android:indeterminateTintMode="multiply"
+        app:indicatorDirectionLinear="endToStart"
+        app:minHideDelay="@integer/material_motion_duration_long_1"
+        app:showDelay="@integer/material_motion_duration_long_1" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/circular_progress_indicator"
+        style="@style/Widget.MaterialComponents.CircularProgressIndicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/app_name"
+        android:indeterminate="true"
+        app:indicatorDirectionCircular="counterclockwise"
+        app:indicatorInset="16dp"
+        app:indicatorSize="60dp"
+        app:minHideDelay="@integer/material_motion_duration_long_1"
+        app:showDelay="@integer/material_motion_duration_long_1" />
+
+    <Button
+        android:id="@+id/btn_show_indeterminate_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Show Indeterminate Progress" />
+
+    <Button
+        android:id="@+id/btn_show_determinate_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Determinate Progress" />
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_recent"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_access_time_filled_24"
+        android:title="Recent" />
+    <item
+        android:id="@+id/item_photos"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_photo_library_24"
+        android:title="Photos" />
+    <item
+        android:id="@+id/item_videos"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_video_library_24"
+        android:title="Videos" />
+    <item
+        android:id="@+id/item_selfies"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_emoji_emotions_24"
+        android:title="Selfies" />
+</menu>

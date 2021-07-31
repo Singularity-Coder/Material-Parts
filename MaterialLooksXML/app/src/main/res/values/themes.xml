@@ -26,6 +26,19 @@
 
         <!-- Effects all Sliders -->
         <!-- <item name="sliderStyle">@style/Widget.App.Slider</item-->
+
+        <!-- Effects all Radio Buttons and other components -->
+        <!-- <item name="colorOnSurface">@color/shrine_pink_900</item>-->
+        <!-- <item name="colorSecondary">@color/shrine_pink_100</item>-->
+
+        <!-- Effects all Radio Buttons Only -->
+        <!-- <item name="radioButtonStyle">@style/Widget.App.RadioButton</item>-->
+
+        <!-- Effects all Circular Progress Indicators Only -->
+        <!-- <item name="circularProgressIndicatorStyle">@style/Widget.App.CircularProgressIndicator</item>-->
+
+        <!-- Effects all Nav Rail Stuff only -->
+        <!-- <item name="navigationRailStyle">@style/Widget.App.NavigationRailView</item-->
     </style>
 
     <style name="ButtonStyle">
@@ -41,6 +54,43 @@
     <!-- 4dp - ShapeAppearance.MaterialComponents.SmallComponent - Buttons, fields, FAbs, chips etc -->
     <!-- 8dp - ShapeAppearance.MaterialComponents.MediumComponent - Cards, dialogs, date picker container -->
     <!-- 24dp - ShapeAppearance.MaterialComponents.LargeComponent - Bottom Sheets -->
+
+    <!-- NAVIGATION RAIL ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+    <!-- <style name="Widget.App.NavigationRailView" parent="Widget.MaterialComponents.NavigationRailView.Colored">-->
+    <!--     <item name="materialThemeOverlay">@style/ThemeOverlay.App.NavigationRailView</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="ThemeOverlay.App.NavigationRailView" parent="">-->
+    <!--     <item name="colorPrimary">@color/shrine_pink_100</item>-->
+    <!--     <item name="colorOnPrimary">@color/shrine_pink_900</item>-->
+    <!-- </style>-->
+
+    <!-- PROGRESS INDICATORS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+    <!-- <style name="Widget.App.CircularProgressIndicator" parent="Widget.MaterialComponents.CircularProgressIndicator">-->
+    <!--     <item name="materialThemeOverlay">@style/ThemeOverlay.App.CircularProgressIndicator</item>-->
+    <!--     <item name="trackThickness">20dp</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="ThemeOverlay.App.CircularProgressIndicator" parent="">-->
+    <!--     <item name="colorPrimary">@color/shrine_pink_100</item>-->
+    <!-- </style>-->
+
+    <!-- RADIO BUTTONS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
+
+    <!-- <style name="Widget.App.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">-->
+    <!--     <item name="materialThemeOverlay">@style/ThemeOverlay.App.RadioButton</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="ThemeOverlay.App.RadioButton" parent="">-->
+    <!--     <item name="colorOnSurface">@color/shrine_pink_900</item>-->
+    <!--     <item name="colorSecondary">@color/shrine_pink_100</item>-->
+    <!-- </style>-->
+
+    <!-- <style name="Widget.App.RadioButton" parent="Widget.MaterialComponents.CompoundButton.RadioButton">-->
+    <!--     <item name="buttonTint">@color/button_tint</item>-->
+    <!-- </style>-->
 
     <!-- SLIDERS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  -->
 

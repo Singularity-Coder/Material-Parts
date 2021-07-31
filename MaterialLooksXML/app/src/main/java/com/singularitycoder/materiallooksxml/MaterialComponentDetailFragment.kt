@@ -2,22 +2,26 @@ package com.singularitycoder.materiallooksxml
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.text.Editable
 import android.text.format.DateFormat.is24HourFormat
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.TextView
-import androidx.annotation.StringRes
+import android.view.*
+import android.widget.*
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.core.view.get
+import androidx.core.view.size
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.progressindicator.BaseProgressIndicator
+import com.google.android.material.progressindicator.CircularProgressIndicator
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.slider.RangeSlider
 import com.google.android.material.slider.Slider
 import com.google.android.material.snackbar.BaseTransientBottomBar
@@ -29,14 +33,18 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.MaterialTimePicker.INPUT_MODE_KEYBOARD
 import com.google.android.material.timepicker.TimeFormat
-import com.singularitycoder.materiallooksxml.Constants.MaterialComponents.*
+import com.singularitycoder.materiallooksxml.Constants.MAX_DURATION_IN_MILLIS
+import com.singularitycoder.materiallooksxml.Constants.REPEAT_DURATION_IN_MILLIS
 import com.singularitycoder.materiallooksxml.Constants.TAG_MODAL_BOTTOM_SHEET
+import com.singularitycoder.materiallooksxml.MaterialComponents.*
 import com.singularitycoder.materiallooksxml.databinding.FragmentMaterialComponentDetailBinding
 import com.singularitycoder.materiallooksxml.databinding.ItemBottomSheetBinding
 import com.singularitycoder.materiallooksxml.sheetsbottom.ModalBottomSheetDialogFragment
 import com.singularitycoder.materiallooksxml.tabs.DemoCollectionAdapter
+import com.singularitycoder.materiallooksxml.tabs.DummyFragment
 import java.text.NumberFormat
 import java.util.*
+
 
 class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
@@ -66,6 +74,9 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     private fun setUpDefaults() {
         binding.apply {
+            layoutNavigationRail.root.visibility = View.GONE
+            layoutProgressIndicators.root.visibility = View.GONE
+            layoutRadioButtons.root.visibility = View.GONE
             layoutSheetsBottom.root.visibility = View.GONE
             layoutSliders.root.visibility = View.GONE
             layoutSnackbars.root.visibility = View.GONE
@@ -92,6 +103,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             CHIPS.title -> setUpChips()
             DATE_PICKERS.title -> setUpDatePickers()
             DIALOGS.title -> setUpDialogs()
+            DIVIDERS.title -> setUpDividers()
             MENUS.title -> setUpMenus()
             NAVIGATION_DRAWER.title -> setUpNavigationDrawer()
             NAVIGATION_RAIL.title -> setUpNavigationRail()
@@ -147,24 +159,323 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     }
 
+    private fun setUpDividers() {
+
+    }
+
     private fun setUpMenus() {
 
     }
 
     private fun setUpNavigationDrawer() {
+        // Modal Drawer
+        // Bottom Drawer
 
     }
 
     private fun setUpNavigationRail() {
+        // 72dp with text
+        // 56dp without text
+        // always with text, selected text, no text
+        // Alignment - top, center, bottom
+        // Divider & Elevated
+        // Rail + Nav Drawer at top
 
+        binding.layoutNavigationRail.root.visibility = View.VISIBLE
+
+        fun loadFragment(fragment: Fragment?) {
+            fragment ?: return
+            myActivity.supportFragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
+        }
+
+        // Default Fragment for Nav Rail
+        loadFragment(DummyFragment(route = Route.NAV_RAIL_RECENT))
+
+        binding.layoutNavigationRail.navigationRail.getOrCreateBadge(R.id.item_photos).apply {
+            isVisible = true
+            number = 99   // An icon only badge will be displayed unless a number is set:
+        }
+
+        // Set default selection on Nav Rail
+        binding.layoutNavigationRail.navigationRail.selectedItemId = R.id.item_recent
+
+        // FAB icon color not changing
+        val fabDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_camera_alt_24)?.changeColor(context = myContext, color = R.color.teal_900)
+        binding.layoutNavigationRail.navigationRail.headerView?.findViewById<FloatingActionButton>(R.id.floating_action_button).apply {
+            this?.setOnClickListener {
+                binding.layoutResult.tvResult.text = "Fab Header Camera Tapped"
+            }
+            this?.colorFilter = null
+            this?.setImageDrawable(fabDrawable)
+        }
+
+        binding.layoutNavigationRail.navigationRail.setOnItemSelectedListener { it: MenuItem ->
+            when (it.itemId) {
+                R.id.item_recent -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Selected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_RECENT))
+                    true
+                }
+                R.id.item_photos -> {
+                    binding.layoutNavigationRail.navigationRail.removeBadge(R.id.item_photos)
+                    binding.layoutResult.tvResult.text = "${it.title} Selected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_PHOTOS))
+                    true
+                }
+                R.id.item_videos -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Selected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_VIDEOS))
+                    true
+                }
+                R.id.item_selfies -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Selected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_SELFIES))
+                    true
+                }
+                else -> false
+            }
+        }
+
+        binding.layoutNavigationRail.navigationRail.setOnItemReselectedListener { it: MenuItem ->
+            when (it.itemId) {
+                R.id.item_recent -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Reselected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_RECENT))
+                }
+                R.id.item_photos -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Reselected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_PHOTOS))
+                }
+                R.id.item_videos -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Reselected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_VIDEOS))
+                }
+                R.id.item_selfies -> {
+                    binding.layoutResult.tvResult.text = "${it.title} Reselected"
+                    loadFragment(DummyFragment(route = Route.NAV_RAIL_SELFIES))
+                }
+            }
+        }
     }
 
     private fun setUpProgressIndicators() {
+        // Linear - Determinate, Indeterminate, Rounded Corners, Varied Thickness, Contiguous, Disjoint, Varied Colors, Multiple Colors, Right to left,
+        // Circular - Determinate, Indeterminate, Rounded Corners, Varied Thickness, Contiguous, Disjoint, Varied Colors, Multiple Colors, Right to left,
+        // Progress on cards, center of screen, attached to toolbar if data already exists in the center
+        // Circular progress inside button
 
+        binding.layoutProgressIndicators.root.visibility = View.VISIBLE
+        var countDownTimer: CountDownTimer? = null
+
+        /** To switch between indeterminate to determinate and vice-versa. This was painful:
+         *
+         * HIDE PROGRESS
+         * SWITCH PROGRESS TYPE
+         * SHOW PROGRESS
+         *
+         **/
+        fun hideLinearIndicators() {
+            binding.layoutProgressIndicators.linearProgressIndicator.apply {
+                hideAnimationBehavior = BaseProgressIndicator.HIDE_INWARD
+                visibility = View.GONE
+            }
+        }
+
+        fun hideCircularIndicators() {
+            binding.layoutProgressIndicators.circularProgressIndicator.apply {
+                hideAnimationBehavior = BaseProgressIndicator.HIDE_INWARD
+                visibility = View.GONE
+            }
+        }
+
+        fun showLinearIndicators() {
+            binding.layoutProgressIndicators.linearProgressIndicator.apply {
+                showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
+                visibility = View.VISIBLE
+            }
+        }
+
+        fun showCircularIndicators() {
+            binding.layoutProgressIndicators.circularProgressIndicator.apply {
+                showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
+                visibility = View.VISIBLE
+            }
+        }
+
+        // Switching from determinate to indeterminate is crashing
+        binding.layoutProgressIndicators.btnShowIndeterminateProgress.setOnClickListener {
+            if (null != countDownTimer) countDownTimer?.cancel()
+            binding.layoutResult.tvResult.text = "Indeterminate Progress Indicator"
+
+            hideLinearIndicators()
+            hideCircularIndicators()
+
+            binding.layoutProgressIndicators.linearProgressIndicator.apply {
+                postInvalidate()
+                trackThickness = 24
+                isIndeterminate = true
+                indicatorDirection = LinearProgressIndicator.INDICATOR_DIRECTION_START_TO_END
+                trackColor = Color.BLACK
+                setIndicatorColor(Color.CYAN, Color.RED, Color.GREEN)
+                trackCornerRadius = 0   // Rounded corners not supported in CONTIGUOUS type
+                indeterminateAnimationType = LinearProgressIndicator.INDETERMINATE_ANIMATION_TYPE_CONTIGUOUS
+            }
+
+            binding.layoutProgressIndicators.circularProgressIndicator.apply {
+                postInvalidate()
+                trackThickness = 24
+                isIndeterminate = true
+                indicatorSize = 120
+                indicatorInset = 8
+                indicatorDirection = CircularProgressIndicator.INDICATOR_DIRECTION_CLOCKWISE
+                trackColor = Color.BLACK
+                setIndicatorColor(Color.CYAN, Color.RED, Color.GREEN)
+            }
+
+            showLinearIndicators()
+            showCircularIndicators()
+        }
+
+        binding.layoutProgressIndicators.btnShowDeterminateProgress.setOnClickListener {
+            if (null != countDownTimer) countDownTimer?.cancel()
+
+            hideLinearIndicators()
+            hideCircularIndicators()
+
+            countDownTimer = object : CountDownTimer(MAX_DURATION_IN_MILLIS, REPEAT_DURATION_IN_MILLIS) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // This method is called every "REPEAT_DURATION_IN_MILLIS" duration. This method stops getting called after "MAX_DURATION_IN_MILLIS" is over.
+                    val progress = ((MAX_DURATION_IN_MILLIS - millisUntilFinished) + 1000) / 1000
+                    myActivity.runOnUiThread {
+                        binding.layoutResult.tvResult.text = "$progress% finished"
+                        binding.layoutProgressIndicators.linearProgressIndicator.apply {
+                            setProgressCompat(progress.toInt(), true)
+                            indeterminateAnimationType = LinearProgressIndicator.INDETERMINATE_ANIMATION_TYPE_DISJOINT
+                            indicatorDirection = LinearProgressIndicator.INDICATOR_DIRECTION_START_TO_END
+                            trackCornerRadius = 16
+                            isIndeterminate = false
+                        }
+                        binding.layoutProgressIndicators.circularProgressIndicator.apply {
+                            setProgressCompat(progress.toInt(), true)
+                            trackCornerRadius = 16
+                            isIndeterminate = false
+                        }
+                    }
+
+                    showLinearIndicators()
+                    showCircularIndicators()
+                }
+
+                override fun onFinish() {
+                    // This method is called after "MAX_DURATION_IN_MILLIS" duration is complete
+                    hideLinearIndicators()
+                    hideCircularIndicators()
+                    showSnackBar(view = binding.root, message = R.string.finished_downloading, duration = Snackbar.LENGTH_SHORT)
+                }
+            }.start()
+        }
+
+        /** On Physical Back Button Pressed **/
+        binding.root.apply {
+            isFocusableInTouchMode = true
+            requestFocus()
+            setOnKeyListener { v: View?, keyCode: Int, event: KeyEvent? ->
+                if (null != countDownTimer) countDownTimer?.cancel()
+                myActivity.onBackPressed()
+                keyCode == KeyEvent.KEYCODE_BACK && event?.action == KeyEvent.ACTION_DOWN
+            }
+        }
     }
 
     private fun setUpRadioButtons() {
+        binding.layoutRadioButtons.root.visibility = View.VISIBLE
 
+        binding.layoutRadioButtons.radioGroup.children.forEach { it: View ->
+            val radioButton = if (it is RadioButton) it as RadioButton else return@forEach
+            if (radioButton.isChecked) {
+                binding.layoutResult.tvResult.text = radioButton.text.toString().plus(" Selected")
+                return@forEach
+            }
+        }
+
+        binding.layoutRadioButtons.apply {
+            radioGroup.setOnCheckedChangeListener { group, checkedId ->
+                // Responds to child RadioButton checked/unchecked
+                binding.layoutResult.tvResult.text = when (group.checkedRadioButtonId) {
+                    rb1.id -> "Radio Button 1 Selected"
+                    rb2.id -> "Radio Button 2 Selected"
+                    rb3.id -> "Radio Button 3 Selected"
+                    rbCustom.id -> "Custom Radio Button Selected"
+                    rbDisabled.id -> "Radio Button 5 Selected"
+                    else -> "Nothing got selected"
+                }
+            }
+        }
+
+        // Order matters. if you put setTextAppearance after color n size, it overrides all those.
+        binding.layoutRadioButtons.rbCustom.apply {
+            setOnCheckedChangeListener { buttonView, isChecked ->
+                if (isChecked) {
+                    showSnackBar(view = binding.layoutRadioButtons.root, message = R.string.custom_radio_message, duration = Snackbar.LENGTH_SHORT)
+                    setTextColor(ContextCompat.getColorStateList(myContext, R.color.purple_500))
+                    buttonTintList = ContextCompat.getColorStateList(myContext, R.color.purple_500)
+                } else {
+                    setTextColor(Color.DKGRAY)
+                    buttonTintList = ContextCompat.getColorStateList(myContext, R.color.title_color)
+                }
+            }
+            text = "Custom Radio Button"
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) setTextAppearance(android.R.style.TextAppearance_DeviceDefault_Widget_ActionMode_Title)
+            minWidth = 26
+            minHeight = 26
+        }
+
+        binding.layoutRadioButtons.btnClearRadioBtnSelection.setOnClickListener {
+            for (i in 0 until binding.layoutRadioButtons.radioGroup.size) {
+                val view = binding.layoutRadioButtons.radioGroup[i]
+                val radioButton = if (view is RadioButton) view as RadioButton else break
+                if (radioButton.isChecked) {
+                    radioButton.isChecked = false
+                    binding.layoutResult.tvResult.text = "Cleared \"${radioButton.text}\" Selection"
+                    break
+                }
+            }
+        }
+
+        // Dynamic Radio Buttons -------------------------------------------------------------------------
+        // For some reason if you declare this first the main radio group is not responding
+        val radioButtonParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            topMargin = 16
+            bottomMargin = 16
+        }
+        val radioButton1 = RadioButton(myContext).apply {
+            text = "Dynamic Radio Button 1"
+            layoutParams = radioButtonParams
+        }
+        val radioButton2 = RadioButton(myContext).apply {
+            text = "Dynamic Radio Button 2"
+            layoutParams = radioButtonParams
+        }
+        val radioGroupParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+            leftMargin = 0
+            topMargin = 0
+            bottomMargin = 0
+        }
+        val radioGroup = RadioGroup(myContext).apply {
+            addView(radioButton1)
+            addView(radioButton2)
+            orientation = RadioGroup.VERTICAL
+            layoutParams = radioGroupParams
+            setPadding(0, 16, 0, 16)
+        }
+        binding.layoutRadioButtons.llDynamicRadioButtons.addView(radioGroup)
+        radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            binding.layoutResult.tvResult.text = when (group.checkedRadioButtonId) {
+                radioButton1.id -> "Dynamic Radio Button 1 Selected"
+                radioButton2.id -> "Dynamic Radio Button 2 Selected"
+                else -> "Nothing got selected"
+            }
+        }
     }
 
     private fun setUpSheetsBottom() {
@@ -173,15 +484,15 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Persistent - G Maps, shopping kart, unread messages
 
         binding.layoutSheetsBottom.root.visibility = View.VISIBLE
-        binding.layoutBottomSheet.root.visibility = View.VISIBLE
+        binding.layoutPersistentBottomSheet.root.visibility = View.VISIBLE
 
         for (i in 1..20) {
-            val itemBinding = ItemBottomSheetBinding.inflate(LayoutInflater.from(myContext), binding.layoutBottomSheet.llSongs, false)
+            val itemBinding = ItemBottomSheetBinding.inflate(LayoutInflater.from(myContext), binding.layoutPersistentBottomSheet.llSongs, false)
             itemBinding.root.text = "My Song $i"
-            binding.layoutBottomSheet.llSongs.addView(itemBinding.root)
+            binding.layoutPersistentBottomSheet.llSongs.addView(itemBinding.root)
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutBottomSheet.root).apply {
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.layoutPersistentBottomSheet.root).apply {
             addBottomSheetCallback(object : BottomSheetCallback() {
                 override fun onStateChanged(bottomSheet: View, newState: Int) {
                     when (newState) {
@@ -189,7 +500,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                         BottomSheetBehavior.STATE_EXPANDED -> {
                             binding.layoutResult.tvResult.text = "STATE EXPANDED"
                             binding.layoutSheetsBottom.btnShowPersistentBottomSheet.text = "Hide Persistent Bottom Sheet"
-                            binding.layoutBottomSheet.llBottomSheetHeader.findViewById<TextView>(R.id.tv_song).showHideIcon(
+                            binding.layoutPersistentBottomSheet.llBottomSheetHeader.findViewById<TextView>(R.id.tv_song).showHideIcon(
                                 context = myContext,
                                 showTick = true,
                                 icon1 = R.drawable.ic_baseline_play_arrow_24,
@@ -203,7 +514,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                         BottomSheetBehavior.STATE_COLLAPSED -> {
                             binding.layoutResult.tvResult.text = "STATE COLLAPSED"
                             binding.layoutSheetsBottom.btnShowPersistentBottomSheet.text = "Show Persistent Bottom Sheet"
-                            binding.layoutBottomSheet.llBottomSheetHeader.findViewById<TextView>(R.id.tv_song).showHideIcon(
+                            binding.layoutPersistentBottomSheet.llBottomSheetHeader.findViewById<TextView>(R.id.tv_song).showHideIcon(
                                 context = myContext,
                                 showTick = true,
                                 icon1 = R.drawable.ic_baseline_pause_24,
@@ -236,6 +547,21 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                 binding.layoutResult.tvResult.text = it.plus(" Selected")
             }).show(myActivity.supportFragmentManager, TAG_MODAL_BOTTOM_SHEET)
         }
+
+//        bottomSheetBehavior.saveFlags
+//        bottomSheetBehavior.isGestureInsetBottomIgnored
+//        bottomSheetBehavior.expandedOffset
+//        bottomSheetBehavior.halfExpandedRatio
+//        bottomSheetBehavior.isDraggable
+//        bottomSheetBehavior.isHideable
+//        bottomSheetBehavior.isFitToContents
+//        bottomSheetBehavior.peekHeight
+//        bottomSheetBehavior.skipCollapsed
+//        bottomSheetBehavior.state
+//        bottomSheetBehavior.disableShapeAnimations()
+//        bottomSheetBehavior.removeBottomSheetCallback()
+//        bottomSheetBehavior.setPeekHeight()
+//        bottomSheetBehavior.setUpdateImportantForAccessibilityOnSiblings()
     }
 
     private fun setUpSliders() {
@@ -337,24 +663,16 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             btnSnackBarCustom.setOnClickListener {
                 Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
                     .setAction("OK") { binding.layoutResult.tvResult.text = "You got it!" }
-                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.teal_100))
+                    .setBackgroundTint(ContextCompat.getColor(myContext, R.color.teal_100))
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.teal_700))
-                    .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.teal_900))
+                    .setTextColor(ContextCompat.getColor(myContext, R.color.teal_700))
+                    .setActionTextColor(ContextCompat.getColor(myContext, R.color.teal_900))
                     .show()
             }
             btnSnackBarCustomPosition.setOnClickListener {
                 Snackbar.make(binding.root, "I am at a different place than usual. How strange!", Snackbar.LENGTH_LONG)
                     .setAnchorView(btnSnackBarSimple)
                     .show()
-            }
-        }
-
-        fun showMultiPurposeSnackBar(view: View, @StringRes message: Int, anchorView: View? = null, duration: Int = Snackbar.LENGTH_SHORT) {
-            Snackbar.make(view, message, duration).apply {
-                this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
-                if (null != anchorView) this.anchorView = anchorView
-                this.show()
             }
         }
     }
@@ -373,20 +691,20 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             setOnCheckedChangeListener { buttonView, isChecked ->
                 binding.layoutResult.tvResult.text = "Custom Switch is ${if (isChecked) "On!" else "Off!"}"
                 if (isChecked) {
-                    thumbDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_stars_24)
-                    thumbTintList = ContextCompat.getColorStateList(requireContext(), R.color.purple_700)
-                    trackDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_dehaze_24)
-                    trackTintList = ContextCompat.getColorStateList(requireContext(), R.color.teal_200)
+                    thumbDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_stars_24)
+                    thumbTintList = ContextCompat.getColorStateList(myContext, R.color.purple_700)
+                    trackDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_dehaze_24)
+                    trackTintList = ContextCompat.getColorStateList(myContext, R.color.teal_200)
                     text = "Custom Switch is On!"
-                    setTextColor(ContextCompat.getColorStateList(requireContext(), R.color.purple_700))
+                    setTextColor(ContextCompat.getColorStateList(myContext, R.color.purple_700))
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) setTextAppearance(android.R.attr.textAppearanceLarge)
                 } else {
-                    thumbDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_stars_24)
-                    thumbTintList = ContextCompat.getColorStateList(requireContext(), android.R.color.darker_gray)
-                    trackDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_dehaze_24)
-                    trackTintList = ContextCompat.getColorStateList(requireContext(), android.R.color.darker_gray)
+                    thumbDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_stars_24)
+                    thumbTintList = ContextCompat.getColorStateList(myContext, android.R.color.darker_gray)
+                    trackDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_dehaze_24)
+                    trackTintList = ContextCompat.getColorStateList(myContext, android.R.color.darker_gray)
                     text = "Custom Switch is Off!"
-                    setTextColor(ContextCompat.getColorStateList(requireContext(), android.R.color.darker_gray))
+                    setTextColor(ContextCompat.getColorStateList(myContext, android.R.color.darker_gray))
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) setTextAppearance(android.R.attr.textAppearanceSmall)
                 }
             }
@@ -445,8 +763,8 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     private fun setUpTextFields() {
         binding.layoutTextFields.root.visibility = View.VISIBLE
-        val professionAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, Constants.professionArray)
-        val hobbyAdapter = ArrayAdapter(requireContext(), R.layout.list_item_custom_array_adapter, Constants.hobbyArray)
+        val professionAdapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.professionArray)
+        val hobbyAdapter = ArrayAdapter(myContext, R.layout.list_item_custom_array_adapter, Constants.hobbyArray)
         (binding.layoutTextFields.etProfession.editText as? AutoCompleteTextView)?.setAdapter(professionAdapter)
         (binding.layoutTextFields.etHobby.editText as? AutoCompleteTextView)?.setAdapter(hobbyAdapter)
         binding.layoutTextFields.etName.editText?.addTextChangedListener(afterTextChanged = { it: Editable? ->
@@ -457,9 +775,9 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             setEndIconOnClickListener {
                 Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
                     .setAction("GOT IT") { }
-                    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.black))
-                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-                    .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
+                    .setBackgroundTint(ContextCompat.getColor(myContext, R.color.black))
+                    .setTextColor(ContextCompat.getColor(myContext, R.color.white))
+                    .setActionTextColor(ContextCompat.getColor(myContext, R.color.purple_200))
                     .show()
             }
             addOnEditTextAttachedListener { it: TextInputLayout ->

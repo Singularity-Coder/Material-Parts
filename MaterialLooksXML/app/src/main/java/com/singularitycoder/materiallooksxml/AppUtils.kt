@@ -114,7 +114,7 @@ fun TextView.showHideIcon(
     } else this.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
 }
 
-private fun Drawable.changeColor(
+fun Drawable.changeColor(
     context: Context,
     @ColorRes color: Int
 ): Drawable {
