@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
                 onComponentClick = { position: Int ->
                     val fragment = MaterialComponentDetailFragment(component = Constants.materialComponentList[position])
                     supportFragmentManager.beginTransaction().apply {
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         add(binding.clMainActivityRoot.id, fragment)
                         addToBackStack(null)
                         commit()

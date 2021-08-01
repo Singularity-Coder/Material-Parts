@@ -11,7 +11,7 @@
         style="@style/Widget.MaterialComponents.NavigationRailView.Colored"
         android:layout_width="wrap_content"
         android:layout_height="384dp"
-        app:headerLayout="@layout/navigation_rail_fab"
+        app:headerLayout="@layout/header_navigation_rail"
         app:labelVisibilityMode="selected"
         app:menu="@menu/navigation_rail_menu" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="384dp"
-        android:background="@color/purple_50"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="8dp"
+        android:background="@color/purple_50" />
 
 </LinearLayout>

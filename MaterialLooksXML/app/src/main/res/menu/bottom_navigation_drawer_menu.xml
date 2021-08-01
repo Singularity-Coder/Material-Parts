@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_recent"
+            android:checked="true"
+            android:contentDescription="Recent"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_access_time_filled_24"
+            android:title="Recent" />
+        <item
+            android:id="@+id/item_photos"
+            android:contentDescription="Photos"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_photo_library_24"
+            android:title="Photos" />
+        <item
+            android:id="@+id/item_videos"
+            android:contentDescription="Videos"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_video_library_24"
+            android:title="Videos" />
+        <item
+            android:id="@+id/item_selfies"
+            android:contentDescription="Selfies"
+            android:enabled="true"
+            android:icon="@drawable/ic_baseline_emoji_emotions_24"
+            android:title="Selfies" />
+    </group>
+</menu>

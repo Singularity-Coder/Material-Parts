@@ -5,4 +5,8 @@
     <string name="tab_others">%d Tabs</string>
     <string name="custom_radio_message">Custom Radio Button Selected</string>
     <string name="finished_downloading">Finished Downloading!</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -40,6 +40,36 @@
     <color name="sub_title_color">#616161</color>
     <color name="error">#B00020</color>
 
+    <!-- Transparent Colors -->
+    <!-- https://stackoverflow.com/questions/11285961/how-to-make-a-background-20-transparent-on-android -->
+    <!-- Hex Opacity Values - First 2 chars control opacity/transparency, rest of them are color stuff
+    100% — FF
+    95% — F2
+    90% — E6
+    85% — D9
+    80% — CC
+    75% — BF
+    70% — B3
+    65% — A6
+    60% — 99
+    55% — 8C
+    50% — 80
+    45% — 73
+    40% — 66
+    35% — 59
+    30% — 4D
+    25% — 40
+    20% — 33
+    15% — 26
+    10% — 1A
+    5% — 0D
+    0% — 00
+    -->
+    <color name="twenty_percent_transparent_black">#CC000000</color>
+    <color name="eighty_percent_transparent_black">#33000000</color>
+    <color name="forty_percent_transparent_black">#66000000</color>
+    <color name="sixty_percent_transparent_black">#99000000</color>
+
     <!-- ALL MATERIAL COLORS -->
     <!-- https://gist.github.com/daniellevass/b0b8cfa773488e138037 -->
     <!-- https://material.io/design/color/the-color-system.html#tools-for-picking-colors -->

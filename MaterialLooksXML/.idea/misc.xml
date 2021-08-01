@@ -8,19 +8,31 @@
         <entry key="app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.3685185185185185" />
         <entry key="app/src/main/res/drawable/ic_baseline_emoji_emotions_24.xml" value="0.32407407407407407" />
         <entry key="app/src/main/res/drawable/ic_baseline_history_24.xml" value="0.32407407407407407" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_base.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/fragment_dummy.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/fragment_dummy_tab.xml" value="0.19300911854103345" />
-        <entry key="app/src/main/res/layout/fragment_material_component_detail.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/fragment_material_component_detail.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/header_navigation_drawer.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/header_navigation_rail.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_bottom_navigation_drawers.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_modal_bottom_sheet.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_modal_navigation_drawer.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_navigation_drawers.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_navigation_rail.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/layout_persistent_bottom_sheet.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_progress_indicators.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_result.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_sheets_bottom.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/list_item_component.xml" value="0.335" />
         <entry key="app/src/main/res/layout/navigation_rail_fab.xml" value="0.335" />
+        <entry key="app/src/main/res/menu/bottom_navigation_drawer_menu.xml" value="0.30925925925925923" />
+        <entry key="app/src/main/res/menu/navigation_drawer_menu.xml" value="0.31296296296296294" />
         <entry key="app/src/main/res/menu/navigation_rail_menu.xml" value="0.2833333333333333" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -23,7 +23,7 @@ class DummyFragment(val route: Route, val pageNumber: Int = 0) : Fragment() {
     private lateinit var binding: FragmentDummyBinding
 
     // Fragments must have public no-arg constructor
-    constructor() : this(Route.NONE, 0)
+    constructor() : this(route = Route.NONE, pageNumber = 0)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

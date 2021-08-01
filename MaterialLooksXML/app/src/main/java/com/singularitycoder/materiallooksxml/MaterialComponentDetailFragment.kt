@@ -10,7 +10,10 @@ import android.text.Editable
 import android.text.format.DateFormat.is24HourFormat
 import android.view.*
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.core.view.children
 import androidx.core.view.get
 import androidx.core.view.size
@@ -19,6 +22,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.progressindicator.BaseProgressIndicator
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -45,7 +49,6 @@ import com.singularitycoder.materiallooksxml.tabs.DummyFragment
 import java.text.NumberFormat
 import java.util.*
 
-
 class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
     private lateinit var demoCollectionAdapter: DemoCollectionAdapter
@@ -54,7 +57,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private lateinit var binding: FragmentMaterialComponentDetailBinding
 
     // Fragments must have public no-arg constructor
-    constructor() : this(MaterialComponent(0, "", "", ""))
+    constructor() : this(MaterialComponent(image = 0, title = "", subtitle = "", link = ""))
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -69,11 +72,31 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpToolbar()
         setUpDefaults()
+    }
+
+    private fun setUpToolbar() {
+        binding.toolbar.apply {
+            title = getString(R.string.app_name)
+            setTitleTextColor(ContextCompat.getColor(myContext, R.color.white))
+            navigationIcon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_arrow_back_24)
+            setNavigationIconTint(ContextCompat.getColor(myContext, R.color.white))
+        }
+
+        myActivity.apply {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowHomeEnabled(true)
+        }
+
+        // Click wont work until toolbar is assigned to activity
+        binding.toolbar.setNavigationOnClickListener { myActivity.onBackPressed() }
     }
 
     private fun setUpDefaults() {
         binding.apply {
+            layoutNavigationDrawers.root.visibility = View.GONE
             layoutNavigationRail.root.visibility = View.GONE
             layoutProgressIndicators.root.visibility = View.GONE
             layoutRadioButtons.root.visibility = View.GONE
@@ -120,57 +143,193 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpAppBarBottom() {
-
+        binding.toolbar.title = APP_BAR_BOTTOM.title
     }
 
     private fun setUpAppBarTop() {
-
+        binding.toolbar.title = APP_BAR_TOP.title
     }
 
     private fun setUpBottomNavigation() {
-
+        binding.toolbar.title = BOTTOM_NAVIGATION.title
     }
 
     private fun setUpButtons() {
-
+        binding.toolbar.title = BUTTONS.title
     }
 
     private fun setUpFloatingActionButton() {
-
+        binding.toolbar.title = FLOATING_ACTION_BUTTON.title
     }
 
     private fun setUpCards() {
-
+        binding.toolbar.title = CARDS.title
     }
 
     private fun setUpCheckBoxes() {
-
+        binding.toolbar.title = CHECK_BOXES.title
     }
 
     private fun setUpChips() {
-
+        binding.toolbar.title = CHIPS.title
     }
 
     private fun setUpDatePickers() {
-
+        binding.toolbar.title = DATE_PICKERS.title
     }
 
     private fun setUpDialogs() {
-
+        binding.toolbar.title = DIALOGS.title
     }
 
     private fun setUpDividers() {
-
+        binding.toolbar.title = DIVIDERS.title
     }
 
     private fun setUpMenus() {
-
+        binding.toolbar.title = MENUS.title
     }
 
     private fun setUpNavigationDrawer() {
-        // Modal Drawer
-        // Bottom Drawer
+        // Modal Drawer - left to right
+        // Bottom Drawer - bottom to top
+        // Bottom Drawer full screen with close - bottom to top
+        // Dividers
+        // Header
+        // icon & text
 
+        binding.apply {
+            toolbar.title = NAVIGATION_DRAWER.title
+            bottomAppBar.title = "Bottom Navigation Drawer" // Not working
+            bottomAppBar.setTitleTextColor(ContextCompat.getColor(myContext, R.color.white))    // Not working
+        }
+
+        binding.apply {
+            layoutNavigationDrawers.root.visibility = View.VISIBLE
+            navigationDrawerModal.visibility = View.VISIBLE
+            bottomAppBar.visibility = View.VISIBLE
+            navigationDrawerBottom.visibility = View.VISIBLE
+            flScrim.visibility = View.GONE
+        }
+
+        fun onMenuItemClick(menuItem: MenuItem, isChecked: Boolean = true): Boolean {
+            binding.layoutResult.tvResult.text = "${menuItem.title} Selected"
+            menuItem.isChecked = isChecked
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
+            return true
+        }
+
+        // If you want the nav drawer to be open at all times
+        // binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN)
+
+        // If you want to change the scrim color
+        // binding.drawerLayout.setScrimColor(ContextCompat.getColor(myContext, android.R.color.transparent))
+
+        // Without toolbar Nav Drawer wont work.
+        val toggle = ActionBarDrawerToggle(
+            myActivity,
+            binding.drawerLayout,
+            binding.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
+        ).apply {
+            syncState()
+            isDrawerIndicatorEnabled = true
+            setHomeAsUpIndicator(R.drawable.ic_baseline_menu_24)
+        }
+        binding.drawerLayout.addDrawerListener(toggle)
+
+        binding.navigationDrawerModal.setNavigationItemSelectedListener { it: MenuItem ->
+            // Handle menu item selected
+            when (it.itemId) {
+                R.id.item_recent -> onMenuItemClick(menuItem = it)
+                R.id.item_photos -> onMenuItemClick(menuItem = it)
+                R.id.item_videos -> onMenuItemClick(menuItem = it)
+                R.id.item_selfies -> onMenuItemClick(menuItem = it)
+                R.id.item_favorites -> onMenuItemClick(menuItem = it, isChecked = false)
+                R.id.item_screenshots -> onMenuItemClick(menuItem = it, isChecked = false)
+                R.id.item_downloads -> onMenuItemClick(menuItem = it, isChecked = false)
+                else -> false
+            }
+        }
+
+        binding.layoutNavigationDrawers.btnShowModalNavigationDrawer.setOnClickListener {
+            // GravityCompat.START is the location of the nav drawer. It has nothing to do with motion or direction
+            if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                binding.drawerLayout.closeDrawer(GravityCompat.START)
+            } else {
+                binding.drawerLayout.openDrawer(GravityCompat.START)
+            }
+        }
+
+        // Bottom Navigation Drawer --------------------------------------------------------------------------
+        // This is so painful and confusing to use.
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.navigationDrawerBottom).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.navigationDrawerBottom.setNavigationItemSelectedListener { menuItem ->
+            // Handle menu item selected
+            binding.layoutResult.tvResult.text = "${menuItem.title} Selected"
+            menuItem.isChecked = true
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.flScrim.visibility = View.GONE
+            true
+        }
+
+        binding.flScrim.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.flScrim.visibility = View.GONE
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+//                val baseColor = Color.BLACK
+//                // 60% opacity
+//                val baseAlpha = ResourcesCompat.getFloat(resources, R.dimen.material_emphasis_medium)
+//                // Map slideOffset from [-1.0, 1.0] to [0.0, 1.0]
+//                val offset = (slideOffset - (-1f)) / (1f - (-1f)) * (1f - 0f) + 0f
+//                val alpha = MathUtils.clamp(0f, 255f, offset * baseAlpha).toInt()
+//                val color = Color.argb(alpha, baseColor.red, baseColor.green, baseColor.blue)
+//                binding.flScrim.setBackgroundColor(color)
+                binding.flScrim.setBackgroundColor(ContextCompat.getColor(myContext, R.color.sixty_percent_transparent_black))
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    binding.flScrim.visibility = View.GONE
+                }
+            }
+        })
+
+        fun showHideBottomNavigationDrawer(bottomSheetBehavior: BottomSheetBehavior<NavigationView>) {
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                binding.flScrim.visibility = View.GONE
+            } else {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                binding.flScrim.visibility = View.VISIBLE
+            }
+        }
+
+        binding.bottomAppBar.setNavigationOnClickListener {
+            showHideBottomNavigationDrawer(bottomSheetBehavior)
+        }
+
+        binding.layoutNavigationDrawers.btnShowBottomNavigationDrawer.setOnClickListener {
+            showHideBottomNavigationDrawer(bottomSheetBehavior)
+        }
+
+        // On Fragment Backpress --------------------------------------------------------------------------
+        myActivity.onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                } else {
+                    myActivity.supportFragmentManager.popBackStackImmediate()
+                }
+            }
+        })
     }
 
     private fun setUpNavigationRail() {
@@ -181,6 +340,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Divider & Elevated
         // Rail + Nav Drawer at top
 
+        binding.toolbar.title = NAVIGATION_RAIL.title
         binding.layoutNavigationRail.root.visibility = View.VISIBLE
 
         fun loadFragment(fragment: Fragment?) {
@@ -264,6 +424,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Progress on cards, center of screen, attached to toolbar if data already exists in the center
         // Circular progress inside button
 
+        binding.toolbar.title = PROGRESS_INDICATORS.title
         binding.layoutProgressIndicators.root.visibility = View.VISIBLE
         var countDownTimer: CountDownTimer? = null
 
@@ -388,6 +549,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpRadioButtons() {
+        binding.toolbar.title = RADIO_BUTTONS.title
         binding.layoutRadioButtons.root.visibility = View.VISIBLE
 
         binding.layoutRadioButtons.radioGroup.children.forEach { it: View ->
@@ -483,6 +645,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Modal - List Dialog replacement
         // Persistent - G Maps, shopping kart, unread messages
 
+        binding.toolbar.title = SHEETS_BOTTOM.title
         binding.layoutSheetsBottom.root.visibility = View.VISIBLE
         binding.layoutPersistentBottomSheet.root.visibility = View.VISIBLE
 
@@ -565,6 +728,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpSliders() {
+        binding.toolbar.title = SLIDERS.title
         binding.layoutSliders.root.visibility = View.VISIBLE
         binding.layoutSliders.sliderContinuous.apply {
             valueFrom = 0.0F
@@ -645,6 +809,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpSnackbars() {
+        binding.toolbar.title = SNACKBARS.title
         binding.layoutSnackbars.root.visibility = View.VISIBLE
         binding.layoutSnackbars.apply {
             btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.root, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
@@ -679,6 +844,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     @SuppressLint("ResourceType")
     private fun setUpSwitches() {
+        binding.toolbar.title = SWITCHES.title
         binding.layoutSwitches.root.visibility = View.VISIBLE
         binding.layoutSwitches.apply {
             switchBasic.isChecked = false
@@ -722,6 +888,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // collapse toolbar & tabs
         // tabs with notification badges
 
+        binding.toolbar.title = TABS.title
         binding.layoutTabs.root.visibility = View.VISIBLE
 
         demoCollectionAdapter = DemoCollectionAdapter(this)
@@ -762,6 +929,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpTextFields() {
+        binding.toolbar.title = TEXT_FIELDS.title
         binding.layoutTextFields.root.visibility = View.VISIBLE
         val professionAdapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.professionArray)
         val hobbyAdapter = ArrayAdapter(myContext, R.layout.list_item_custom_array_adapter, Constants.hobbyArray)
@@ -803,6 +971,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpTimePickers() {
+        binding.toolbar.title = TIME_PICKERS.title
         binding.layoutTimePickers.root.visibility = View.VISIBLE
         val clockFormat = if (is24HourFormat(myContext)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         binding.layoutTimePickers.btnTimePicker.setOnClickListener {
