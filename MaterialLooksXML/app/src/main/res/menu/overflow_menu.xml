@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/item_mail"
+        android:icon="@drawable/ic_baseline_email_24"
+        android:iconTint="@color/sub_title_color"
+        android:title="Mail"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_message"
+        android:icon="@drawable/ic_baseline_message_24"
+        android:iconTint="@color/sub_title_color"
+        android:title="Message"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_share"
+        android:icon="@drawable/ic_baseline_share_24"
+        android:iconTint="@color/sub_title_color"
+        android:title="Share"
+        app:showAsAction="withText" />
+</menu>

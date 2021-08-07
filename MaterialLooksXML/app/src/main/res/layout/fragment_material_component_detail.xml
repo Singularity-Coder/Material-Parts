@@ -54,6 +54,22 @@
                         layout="@layout/layout_result" />
 
                     <include
+                        android:id="@+id/layout_date_pickers"
+                        layout="@layout/layout_date_pickers" />
+
+                    <include
+                        android:id="@+id/layout_dialogs"
+                        layout="@layout/layout_dialogs" />
+
+                    <include
+                        android:id="@+id/layout_dividers"
+                        layout="@layout/layout_dividers" />
+
+                    <include
+                        android:id="@+id/layout_menus"
+                        layout="@layout/layout_menus" />
+
+                    <include
                         android:id="@+id/layout_navigation_drawers"
                         layout="@layout/layout_navigation_drawers" />
 

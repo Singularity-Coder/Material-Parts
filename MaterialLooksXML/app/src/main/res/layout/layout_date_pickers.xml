@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date Picker" />
+
+    <Button
+        android:id="@+id/btn_date_input_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date Input Picker" />
+
+    <Button
+        android:id="@+id/btn_date_range_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Date Range Picker" />
+
+    <Button
+        android:id="@+id/btn_date_range_input_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date Range Input Picker" />
+
+</LinearLayout>

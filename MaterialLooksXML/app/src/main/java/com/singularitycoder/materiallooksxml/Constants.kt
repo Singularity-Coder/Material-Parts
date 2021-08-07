@@ -5,8 +5,8 @@ object Constants {
     const val MAX_DURATION_IN_MILLIS = 100_000L // 100 sec
     const val TAG_MODAL_BOTTOM_SHEET = "MODAL_BOTTOM_SHEET"
 
-    val professionArray = listOf("Android Developer", "Data Scientist", "Otaku", "Rocket Scientist", "Physicist", "Mathematician")
-    val hobbyArray = listOf("Meditation", "Yoga", "Computer Programming", "Hacking", "3D Animation", "Story Telling", "Graphic Design", "Inventing")
+    val professionList = listOf("Android Developer", "Data Scientist", "Otaku", "Rocket Scientist", "Physicist", "Mathematician")
+    val hobbyList = listOf("Meditation", "Yoga", "Computer Programming", "Hacking", "3D Animation", "Story Telling", "Graphic Design", "Inventing")
     val materialComponentList = ArrayList<MaterialComponent>()
 
     init {

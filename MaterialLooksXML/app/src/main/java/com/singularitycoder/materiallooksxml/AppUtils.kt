@@ -2,9 +2,14 @@ package com.singularitycoder.materiallooksxml
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
+import android.os.Build
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TimingLogger
+import android.util.TypedValue
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -13,9 +18,76 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.view.forEach
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import java.lang.reflect.Method
+import java.text.SimpleDateFormat
 import java.util.*
+
+val dateFormatList = listOf(
+    "dd-MMMM hh:mm",
+    "dd-MM-yyyy",
+    "dd/MM/yyyy",
+    "dd-MMM-yyyy",
+    "dd/MMM/yyyy",
+    "dd-MMM-yyyy",
+    "dd MMM yyyy",
+    "dd-MMM-yyyy h:mm a",
+    "dd MMM yyyy, hh:mm a",
+    "dd MMM yyyy, hh:mm:ss a",
+    "dd MMM yyyy, h:mm:ss aaa",
+    "yyyy/MM/dd",
+    "yyyy-MM-dd",
+    "yyyy.MM.dd HH:mm",
+    "yyyy/MM/dd hh:mm aa",
+    "yyyy-MM-dd'T'HH:mm:ss.SS'Z'",
+    "hh:mm a"
+)
+
+fun convertLongToTime(time: Long, type: UByte): String {
+    val date = Date(time)
+    val dateFormat = SimpleDateFormat(dateFormatList.getOrElse(index = type.toInt(), defaultValue = { dateFormatList[3] }), Locale.getDefault())
+    return dateFormat.format(date)
+}
+
+fun convertDateToLong(date: String, type: UByte): Long {
+    if (date.trim().isBlank() || date.toLowCase().trim() == "null") return convertDateToLong(date = Date().toString(), type = 3u)
+    val dateFormat = SimpleDateFormat(dateFormatList.getOrElse(index = type.toInt(), defaultValue = { dateFormatList[3] }), Locale.getDefault())
+    return try {
+        if (dateFormat.parse(date) is Date) dateFormat.parse(date).time else convertDateToLong(date = Date().toString(), type = 3u)
+    } catch (e: Exception) {
+        0
+    }
+}
+
+// https://www.programmersought.com/article/39074216761/
+fun Menu.invokeSetMenuIconMethod() {
+    if (this.javaClass.simpleName.equals("MenuBuilder", ignoreCase = true)) {
+        try {
+            val method: Method = this.javaClass.getDeclaredMethod("setOptionalIconsVisible", java.lang.Boolean.TYPE)
+            method.isAccessible = true
+            method.invoke(this, true)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+fun setMarginBtwMenuIconAndText(context: Context, menu: Menu, iconMarginDp: Int) {
+    menu.forEach { item: MenuItem ->
+        val iconMarginPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, iconMarginDp.toFloat(), context.resources.displayMetrics).toInt()
+        if (null != item.icon) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
+            } else {
+                item.icon = object : InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0) {
+                    override fun getIntrinsicWidth(): Int = intrinsicHeight + iconMarginPx + iconMarginPx
+                }
+            }
+        }
+    }
+}
 
 fun logExecutionTime(tag: String, label: String, vararg methods: () -> Any) {
     val timings = TimingLogger(tag, label).apply {

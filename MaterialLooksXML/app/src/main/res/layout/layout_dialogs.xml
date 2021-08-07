@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btn_show_alert_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alert" />
+
+    <Button
+        android:id="@+id/btn_show_themed_alert_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alert Themed" />
+
+    <Button
+        android:id="@+id/btn_show_fixed_size_alert_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Alert Fixed Size" />
+
+    <Button
+        android:id="@+id/btn_show_simple_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Simple Dialog" />
+
+    <Button
+        android:id="@+id/btn_show_simple_themed_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simple Themed Dialog" />
+
+    <Button
+        android:id="@+id/btn_show_confirmation_single_choice_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Confirmation Single Choice" />
+
+    <Button
+        android:id="@+id/btn_show_confirmation_single_choice_themed_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmation Single Choice Themed" />
+
+    <Button
+        android:id="@+id/btn_show_confirmation_multiple_choice_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmation Multiple Choice" />
+
+    <Button
+        android:id="@+id/btn_show_confirmation_multiple_choice_themed_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmation Multiple Choice Themed" />
+
+    <Button
+        android:id="@+id/btn_show_fullscreen_dialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Fullscreen Dialog" />
+
+</LinearLayout>

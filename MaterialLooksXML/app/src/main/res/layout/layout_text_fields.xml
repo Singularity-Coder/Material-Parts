@@ -77,7 +77,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Profession"
-        app:errorEnabled="true"
         app:prefixText="I am a/an "
         app:startIconContentDescription="Profession"
         app:startIconDrawable="@drawable/ic_baseline_work_outline_24">
@@ -97,7 +96,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Hobby"
-        app:errorEnabled="true"
         app:startIconContentDescription="Hobby"
         app:startIconDrawable="@drawable/ic_baseline_self_improvement_24">
 

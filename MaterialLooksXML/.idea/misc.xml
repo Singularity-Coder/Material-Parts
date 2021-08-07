@@ -4,31 +4,47 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.3148148148148148" />
+        <entry key="app/src/main/res/drawable/custom_radio_button.xml" value="0.3296296296296296" />
         <entry key="app/src/main/res/drawable/ic_baseline_access_time_24.xml" value="0.32407407407407407" />
         <entry key="app/src/main/res/drawable/ic_baseline_camera_alt_24.xml" value="0.3685185185185185" />
+        <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.3527777777777778" />
+        <entry key="app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_baseline_emoji_emotions_24.xml" value="0.32407407407407407" />
         <entry key="app/src/main/res/drawable/ic_baseline_history_24.xml" value="0.32407407407407407" />
+        <entry key="app/src/main/res/drawable/ic_baseline_message_24.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_base.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/fragment_dummy.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/fragment_dummy_tab.xml" value="0.19300911854103345" />
-        <entry key="app/src/main/res/layout/fragment_material_component_detail.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_full_screen_dialog.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_material_component_detail.xml" value="0.23511261956186363" />
         <entry key="app/src/main/res/layout/header_navigation_drawer.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/header_navigation_rail.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_bottom_navigation_drawers.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_date_pickers.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_dialogs.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/layout_dividers.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_menus.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_modal_bottom_sheet.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_modal_navigation_drawer.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_navigation_drawers.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_navigation_rail.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_persistent_bottom_sheet.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_progress_indicators.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_radio_buttons.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_result.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_sheets_bottom.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_text_fields.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/list_item_component.xml" value="0.335" />
         <entry key="app/src/main/res/layout/navigation_rail_fab.xml" value="0.335" />
         <entry key="app/src/main/res/menu/bottom_navigation_drawer_menu.xml" value="0.30925925925925923" />
+        <entry key="app/src/main/res/menu/full_screen_dialog_menu.xml" value="0.2962962962962963" />
         <entry key="app/src/main/res/menu/navigation_drawer_menu.xml" value="0.31296296296296294" />
         <entry key="app/src/main/res/menu/navigation_rail_menu.xml" value="0.2833333333333333" />
+        <entry key="app/src/main/res/menu/overflow_menu.xml" value="0.2935185185185185" />
+        <entry key="app/src/main/res/menu/popup_menu.xml" value="0.2851851851851852" />
       </map>
     </option>
   </component>

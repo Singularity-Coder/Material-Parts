@@ -9,18 +9,23 @@ import android.os.CountDownTimer
 import android.text.Editable
 import android.text.format.DateFormat.is24HourFormat
 import android.view.*
+import android.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.MenuRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.content.ContextCompat
-import androidx.core.view.GravityCompat
-import androidx.core.view.children
-import androidx.core.view.get
-import androidx.core.view.size
+import androidx.core.util.Pair
+import androidx.core.util.toAndroidXPair
+import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.progressindicator.BaseProgressIndicator
@@ -43,11 +48,15 @@ import com.singularitycoder.materiallooksxml.Constants.TAG_MODAL_BOTTOM_SHEET
 import com.singularitycoder.materiallooksxml.MaterialComponents.*
 import com.singularitycoder.materiallooksxml.databinding.FragmentMaterialComponentDetailBinding
 import com.singularitycoder.materiallooksxml.databinding.ItemBottomSheetBinding
+import com.singularitycoder.materiallooksxml.dialogs.FullScreenDialogFragment
+import com.singularitycoder.materiallooksxml.dialogs.Person
 import com.singularitycoder.materiallooksxml.sheetsbottom.ModalBottomSheetDialogFragment
 import com.singularitycoder.materiallooksxml.tabs.DemoCollectionAdapter
 import com.singularitycoder.materiallooksxml.tabs.DummyFragment
 import java.text.NumberFormat
 import java.util.*
+import kotlin.collections.ArrayList
+
 
 class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
@@ -65,6 +74,11 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         myActivity = context as MainActivity
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMaterialComponentDetailBinding.inflate(inflater, container, false)
         return binding.root
@@ -74,6 +88,63 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         super.onViewCreated(view, savedInstanceState)
         setUpToolbar()
         setUpDefaults()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.invokeSetMenuIconMethod()
+        if (component.title == MENUS.title) inflater.inflate(R.menu.overflow_menu, menu)
+        setMarginBtwMenuIconAndText(context = myContext, menu = menu, iconMarginDp = 16)
+        menu.forEach {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                it.iconTintList = ContextCompat.getColorStateList(myContext, R.color.purple_500)
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        fun onMenuItemClick(item: MenuItem): Boolean {
+            binding.layoutResult.tvResult.text = "Overflow Menu Item \"${item.title}\" got selected!"
+            return true
+        }
+
+        when (item.itemId) {
+            R.id.item_mail -> onMenuItemClick(item = item)
+            R.id.item_message -> onMenuItemClick(item = item)
+            R.id.item_share -> onMenuItemClick(item = item)
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
+        menu.invokeSetMenuIconMethod()  // This should happen before menu inflation for icons to show up
+
+        val tvContextMenu = v as TextView
+
+        fun onContextMenuItemClick(menuItem: MenuItem?, tvContextMenu: TextView): Boolean {
+            val myMenuInfo = menuItem?.menuInfo as? AdapterView.AdapterContextMenuInfo // Another way to get menu info
+            binding.layoutResult.tvResult.text = "${menuItem?.title} \"${tvContextMenu.text}\""
+            return true
+        }
+
+        // Icons not showing up
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            menu.add("Cut")
+                .setIcon(R.drawable.ic_baseline_content_cut_24)
+                .setIconTintList(ContextCompat.getColorStateList(myContext, R.color.purple_500))
+                .setOnMenuItemClickListener { it: MenuItem? -> onContextMenuItemClick(menuItem = it, tvContextMenu = tvContextMenu) }
+                .setShowAsAction(SHOW_AS_ACTION_WITH_TEXT)
+            menu.add("Copy")
+                .setIcon(R.drawable.ic_baseline_content_copy_24)
+                .setIconTintList(ContextCompat.getColorStateList(myContext, R.color.purple_500))
+                .setOnMenuItemClickListener { it: MenuItem? -> onContextMenuItemClick(menuItem = it, tvContextMenu = tvContextMenu) }
+                .setShowAsAction(SHOW_AS_ACTION_WITH_TEXT)
+            menu.add("Paste")
+                .setIcon(R.drawable.ic_baseline_content_paste_24)
+                .setIconTintList(ContextCompat.getColorStateList(myContext, R.color.purple_500))
+                .setOnMenuItemClickListener { it: MenuItem? -> onContextMenuItemClick(menuItem = it, tvContextMenu = tvContextMenu) }
+                .setShowAsAction(SHOW_AS_ACTION_WITH_TEXT)
+        }
     }
 
     private fun setUpToolbar() {
@@ -96,6 +167,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     private fun setUpDefaults() {
         binding.apply {
+            layoutDatePickers.root.visibility = View.GONE
+            layoutDialogs.root.visibility = View.GONE
+            layoutDividers.root.visibility = View.GONE
+            layoutMenus.root.visibility = View.GONE
             layoutNavigationDrawers.root.visibility = View.GONE
             layoutNavigationRail.root.visibility = View.GONE
             layoutProgressIndicators.root.visibility = View.GONE
@@ -175,19 +250,311 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpDatePickers() {
-        binding.toolbar.title = DATE_PICKERS.title
+        // Calendar Date Picker
+        // Date Range Picker
+        // Input Picker for Date
+        // Input Picker for Range
+
+        binding.apply {
+            toolbar.title = DATE_PICKERS.title
+            layoutDatePickers.root.visibility = View.VISIBLE
+        }
+
+        fun showDatePicker(type: UByte = 0u) {
+            if (type.toInt() > 1) {
+                showDatePicker(type = 0u)
+                return
+            }
+            val datePicker = if (type.toInt() == 0) {
+                MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select date")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
+                    .build()
+            } else {
+                MaterialDatePicker.Builder.datePicker()
+                    .setTitleText("Select date")
+                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
+                    .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
+                    .build()
+            }
+            datePicker.show(myActivity.supportFragmentManager, "TAG_DATE_PICKER")
+            datePicker.apply {
+                addOnPositiveButtonClickListener { it: Long? ->
+                    binding.layoutResult.tvResult.text = convertLongToTime(time = it ?: return@addOnPositiveButtonClickListener, type = 3u)
+                }
+                addOnNegativeButtonClickListener {
+                    binding.layoutResult.tvResult.text = "You cancelled"
+                }
+            }
+        }
+
+        fun showDateRangePicker(type: UByte = 0u) {
+            if (type.toInt() > 1) {
+                showDateRangePicker(type = 0u)
+                return
+            }
+            val dateRangePicker = if (type.toInt() == 0) {
+                MaterialDatePicker.Builder.dateRangePicker()
+                    .setTitleText("Select dates")
+                    .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
+                    .build()
+            } else {
+                MaterialDatePicker.Builder.dateRangePicker()
+                    .setTitleText("Select dates")
+                    .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
+                    .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
+                    .build()
+            }
+            dateRangePicker.show(myActivity.supportFragmentManager, "TAG_DATE_RANGE_PICKER")
+            dateRangePicker.apply {
+                addOnPositiveButtonClickListener { it: Pair<Long, Long>? ->
+                    binding.layoutResult.tvResult.text = "Range from ${
+                        convertLongToTime(time = it?.first ?: return@addOnPositiveButtonClickListener, type = 3u)
+                    } to ${
+                        convertLongToTime(time = it?.second ?: return@addOnPositiveButtonClickListener, type = 3u)
+                    }"
+                }
+                addOnNegativeButtonClickListener {
+                    binding.layoutResult.tvResult.text = "You cancelled"
+                }
+            }
+        }
+
+        binding.layoutDatePickers.apply {
+            btnDatePicker.setOnClickListener {
+                showDatePicker()
+            }
+            btnDateInputPicker.setOnClickListener {
+                showDatePicker(type = 1u)
+            }
+        }
+
+        binding.layoutDatePickers.apply {
+            btnDateRangePicker.setOnClickListener {
+                showDateRangePicker()
+            }
+            btnDateRangeInputPicker.setOnClickListener {
+                showDateRangePicker(type = 1u)
+            }
+        }
     }
 
     private fun setUpDialogs() {
-        binding.toolbar.title = DIALOGS.title
+        // Super rounded dialogs
+        // Dismiss button until item is selected
+        // Single action dialog
+        // Custom Dialog
+        // Full-Screen Dialog - dialogs over full screen dialogs
+
+        binding.apply {
+            toolbar.title = DIALOGS.title
+            layoutDialogs.root.visibility = View.VISIBLE
+        }
+
+        fun showThemedAlertDialog(@StyleRes theme: Int) {
+            MaterialAlertDialogBuilder(myContext, theme).apply {
+                setCancelable(false)
+                setTitle("Alert Dialog")
+                setMessage(resources.getString(R.string.long_message))
+                setNegativeButton("Decline") { dialog, which -> binding.layoutResult.tvResult.text = "You declined" }
+                setPositiveButton("Accept") { dialog, which -> binding.layoutResult.tvResult.text = "You accepted" }
+                setNeutralButton("Cancel") { dialog, which -> binding.layoutResult.tvResult.text = "You cancelled" }
+                show()
+            }
+        }
+
+        fun showThemedSimpleDialog(@StyleRes theme: Int) {
+            MaterialAlertDialogBuilder(myContext, theme).apply {
+                setTitle("My Hobbies")
+                setItems(Constants.hobbyList.toTypedArray()) { dialog, which ->
+                    binding.layoutResult.tvResult.text = Constants.hobbyList[which]
+                }
+                show()
+            }
+        }
+
+        fun showThemedConfirmationSingleChoiceDialog(@StyleRes theme: Int) {
+            var position = 0
+            MaterialAlertDialogBuilder(myContext, theme).apply {
+                setTitle("My Professions")
+                setNeutralButton("Cancel") { dialog, which ->
+                    binding.layoutResult.tvResult.text = "You cancelled"
+                }
+                setPositiveButton("Ok") { dialog, which ->
+                    binding.layoutResult.tvResult.text = Constants.professionList[position]
+                }
+                setSingleChoiceItems(Constants.professionList.toTypedArray(), /* default checked item */0) { dialog, which ->
+                    position = which
+                }
+                show()
+            }
+        }
+
+        fun showThemedConfirmationMultipleChoiceDialog(@StyleRes theme: Int) {
+            val checkedList = ArrayList<String>()
+            val defaultCheckedItems = booleanArrayOf(false, true, true, false, false, true)
+            MaterialAlertDialogBuilder(myContext, theme).apply {
+                setTitle("My Professions")
+                setNeutralButton("Cancel") { dialog, which ->
+                    binding.layoutResult.tvResult.text = "You cancelled"
+                }
+                setPositiveButton("Ok") { dialog, which ->
+                    binding.layoutResult.tvResult.text = checkedList.toString()
+                }
+                setMultiChoiceItems(Constants.professionList.toTypedArray(), /* defaultCheckedItems */ null) { dialog, which, checked ->
+                    if (checked) checkedList.add(Constants.professionList[which])
+                    else checkedList.remove(Constants.professionList[which])
+                }
+                show()
+            }
+        }
+
+        binding.layoutDialogs.apply {
+            btnShowAlertDialog.setOnClickListener {
+                showThemedAlertDialog(theme = R.style.ThemeOverlay_MaterialComponents_Dialog)
+            }
+            btnShowThemedAlertDialog.setOnClickListener {
+                showThemedAlertDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog_Alert)
+            }
+            btnShowFixedSizeAlertDialog.setOnClickListener {
+                showThemedAlertDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog_FixedSize)
+            }
+        }
+
+        binding.layoutDialogs.apply {
+            btnShowSimpleDialog.setOnClickListener {
+                showThemedSimpleDialog(theme = R.style.ThemeOverlay_MaterialComponents_Dialog)
+            }
+            btnShowSimpleThemedDialog.setOnClickListener {
+                showThemedSimpleDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog)
+            }
+        }
+
+        binding.layoutDialogs.apply {
+            btnShowConfirmationSingleChoiceDialog.setOnClickListener {
+                showThemedConfirmationSingleChoiceDialog(theme = R.style.ThemeOverlay_MaterialComponents_Dialog)
+            }
+            btnShowConfirmationSingleChoiceThemedDialog.setOnClickListener {
+                showThemedConfirmationSingleChoiceDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog)
+            }
+            btnShowConfirmationMultipleChoiceDialog.setOnClickListener {
+                showThemedConfirmationMultipleChoiceDialog(theme = R.style.ThemeOverlay_MaterialComponents_Dialog)
+            }
+            btnShowConfirmationMultipleChoiceThemedDialog.setOnClickListener {
+                showThemedConfirmationMultipleChoiceDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog)
+            }
+        }
+
+        binding.layoutDialogs.btnShowFullscreenDialog.setOnClickListener {
+            val fragment = FullScreenDialogFragment(listener = { person: Person ->
+                binding.layoutResult.tvResult.text = """
+                    Name: ${person.name}
+                    DOB: ${person.dob}
+                    Profession: ${person.profession}
+                """.trimIndent()
+            })
+            myActivity.supportFragmentManager.beginTransaction().apply {
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                // To make it fullscreen, use the 'content' root view as the container for the fragment, which is always the root view for the activity
+                add(android.R.id.content, fragment).addToBackStack(null).commit()
+            }
+        }
     }
 
     private fun setUpDividers() {
-        binding.toolbar.title = DIVIDERS.title
+        // Full-bleed dividers
+        // Inset dividers
+        // Middle dividers
+        // Subheader dividers
+
+        binding.apply {
+            toolbar.title = DIVIDERS.title
+            layoutDividers.root.visibility = View.VISIBLE
+            layoutResult.tvResult.text = "Dividers missing in Material library"
+        }
     }
 
     private fun setUpMenus() {
-        binding.toolbar.title = MENUS.title
+        // Drop Down menus
+        // Text and Icon list
+        // Text, Icon and Keyboard command list
+        // Text with selection state list
+        // Disabled Actions
+        // Scrollable menus
+        // Enterenace animation and no animation
+        // Cascading Menus
+        // Contextual menu - actions are enabled or disabled based on condtions
+        // Dividers
+        // Menus on lists
+        // Editable Drop down menu
+        // Filled Drop down menu
+        // Cut shaped menu
+        // Rounded shaped menu
+        // menu with custom font
+
+        binding.apply {
+            toolbar.title = MENUS.title
+            layoutMenus.root.visibility = View.VISIBLE
+        }
+
+        // Register context menu for TextView
+        registerForContextMenu(binding.layoutMenus.tvContextMenuText)
+
+        val professionAdapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.professionList)
+        (binding.layoutMenus.etFilledExposedDropDownMenu.editText as? AutoCompleteTextView)?.setAdapter(professionAdapter)
+        (binding.layoutMenus.etOutlinedExposedDropDownMenu.editText as? AutoCompleteTextView)?.setAdapter(professionAdapter)
+
+        fun onMenuItemClick(item: MenuItem): Boolean {
+            binding.layoutResult.tvResult.text = "Popup Menu Item \"${item.title}\" got selected!"
+            return true
+        }
+
+        fun showPopupMenu(view: View, @MenuRes menuRes: Int) {
+            PopupMenu(myContext, view).apply {
+                this.menu.invokeSetMenuIconMethod()
+                menuInflater.inflate(menuRes, this.menu)
+                setOnMenuItemClickListener { menuItem: MenuItem ->
+                    when (menuItem.itemId) {
+                        R.id.item_preview -> onMenuItemClick(item = menuItem)
+                        R.id.item_share -> onMenuItemClick(item = menuItem)
+                        R.id.item_get_link -> onMenuItemClick(item = menuItem)
+                        else -> false
+                    }
+                }
+                setOnDismissListener { it: PopupMenu? ->
+                    showSnackBar(view = binding.root, message = R.string.custom_popup_dismiss, duration = Snackbar.LENGTH_SHORT)
+                }
+                setMarginBtwMenuIconAndText(context = myContext, menu = this.menu, iconMarginDp = 16)
+                this.menu.forEach { it: MenuItem ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        it.iconTintList = ContextCompat.getColorStateList(myContext, R.color.purple_500)
+                    }
+                }
+                show()
+            }
+        }
+
+        fun showListPopupMenu(view: View, adapter: ArrayAdapter<String>) {
+            ListPopupWindow(myContext, null, R.attr.listPopupWindowStyle).apply {
+                anchorView = view
+                setAdapter(adapter)
+                setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+                    // Respond to list popup window item click.
+                    binding.layoutResult.tvResult.text = "${(parent?.get(position) as TextView).text} Selected"
+                    this.dismiss()
+                }
+                show()
+            }
+        }
+
+        binding.layoutMenus.btnShowPopupMenu.setOnClickListener { it: View? ->
+            showPopupMenu(view = it ?: return@setOnClickListener, menuRes = R.menu.popup_menu)
+        }
+
+        binding.layoutMenus.btnShowListPopupMenu.setOnClickListener { it: View? ->
+            val adapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.hobbyList)
+            showListPopupMenu(view = it ?: return@setOnClickListener, adapter = adapter)
+        }
     }
 
     private fun setUpNavigationDrawer() {
@@ -217,6 +584,16 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             menuItem.isChecked = isChecked
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             return true
+        }
+
+        fun showHideBottomNavigationDrawer(bottomSheetBehavior: BottomSheetBehavior<NavigationView>) {
+            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                binding.flScrim.visibility = View.GONE
+            } else {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                binding.flScrim.visibility = View.VISIBLE
+            }
         }
 
         // If you want the nav drawer to be open at all times
@@ -270,8 +647,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.navigationDrawerBottom.setNavigationItemSelectedListener { menuItem ->
             // Handle menu item selected
-            binding.layoutResult.tvResult.text = "${menuItem.title} Selected"
-            menuItem.isChecked = true
+            onMenuItemClick(menuItem)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             binding.flScrim.visibility = View.GONE
             true
@@ -302,16 +678,6 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             }
         })
 
-        fun showHideBottomNavigationDrawer(bottomSheetBehavior: BottomSheetBehavior<NavigationView>) {
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                binding.flScrim.visibility = View.GONE
-            } else {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                binding.flScrim.visibility = View.VISIBLE
-            }
-        }
-
         binding.bottomAppBar.setNavigationOnClickListener {
             showHideBottomNavigationDrawer(bottomSheetBehavior)
         }
@@ -340,8 +706,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Divider & Elevated
         // Rail + Nav Drawer at top
 
-        binding.toolbar.title = NAVIGATION_RAIL.title
-        binding.layoutNavigationRail.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = NAVIGATION_RAIL.title
+            layoutNavigationRail.root.visibility = View.VISIBLE
+        }
 
         fun loadFragment(fragment: Fragment?) {
             fragment ?: return
@@ -424,8 +792,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Progress on cards, center of screen, attached to toolbar if data already exists in the center
         // Circular progress inside button
 
-        binding.toolbar.title = PROGRESS_INDICATORS.title
-        binding.layoutProgressIndicators.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = PROGRESS_INDICATORS.title
+            layoutProgressIndicators.root.visibility = View.VISIBLE
+        }
         var countDownTimer: CountDownTimer? = null
 
         /** To switch between indeterminate to determinate and vice-versa. This was painful:
@@ -549,8 +919,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpRadioButtons() {
-        binding.toolbar.title = RADIO_BUTTONS.title
-        binding.layoutRadioButtons.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = RADIO_BUTTONS.title
+            layoutRadioButtons.root.visibility = View.VISIBLE
+        }
 
         binding.layoutRadioButtons.radioGroup.children.forEach { it: View ->
             val radioButton = if (it is RadioButton) it as RadioButton else return@forEach
@@ -581,9 +953,13 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                     showSnackBar(view = binding.layoutRadioButtons.root, message = R.string.custom_radio_message, duration = Snackbar.LENGTH_SHORT)
                     setTextColor(ContextCompat.getColorStateList(myContext, R.color.purple_500))
                     buttonTintList = ContextCompat.getColorStateList(myContext, R.color.purple_500)
+                    buttonDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_sentiment_very_satisfied_24)
+                    setChecked(true)
                 } else {
                     setTextColor(Color.DKGRAY)
                     buttonTintList = ContextCompat.getColorStateList(myContext, R.color.title_color)
+                    buttonDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_sentiment_very_dissatisfied_24)
+                    setChecked(false)
                 }
             }
             text = "Custom Radio Button"
@@ -645,9 +1021,11 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Modal - List Dialog replacement
         // Persistent - G Maps, shopping kart, unread messages
 
-        binding.toolbar.title = SHEETS_BOTTOM.title
-        binding.layoutSheetsBottom.root.visibility = View.VISIBLE
-        binding.layoutPersistentBottomSheet.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = SHEETS_BOTTOM.title
+            layoutSheetsBottom.root.visibility = View.VISIBLE
+            layoutPersistentBottomSheet.root.visibility = View.VISIBLE
+        }
 
         for (i in 1..20) {
             val itemBinding = ItemBottomSheetBinding.inflate(LayoutInflater.from(myContext), binding.layoutPersistentBottomSheet.llSongs, false)
@@ -728,8 +1106,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpSliders() {
-        binding.toolbar.title = SLIDERS.title
-        binding.layoutSliders.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = SLIDERS.title
+            layoutSliders.root.visibility = View.VISIBLE
+        }
         binding.layoutSliders.sliderContinuous.apply {
             valueFrom = 0.0F
             valueTo = 100.0F
@@ -809,8 +1189,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpSnackbars() {
-        binding.toolbar.title = SNACKBARS.title
-        binding.layoutSnackbars.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = SNACKBARS.title
+            layoutSnackbars.root.visibility = View.VISIBLE
+        }
         binding.layoutSnackbars.apply {
             btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.root, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
             btnSnackBarAction.setOnClickListener {
@@ -844,8 +1226,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     @SuppressLint("ResourceType")
     private fun setUpSwitches() {
-        binding.toolbar.title = SWITCHES.title
-        binding.layoutSwitches.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = SWITCHES.title
+            layoutSwitches.root.visibility = View.VISIBLE
+        }
         binding.layoutSwitches.apply {
             switchBasic.isChecked = false
             switchCustom.isChecked = true
@@ -888,35 +1272,27 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // collapse toolbar & tabs
         // tabs with notification badges
 
-        binding.toolbar.title = TABS.title
-        binding.layoutTabs.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = TABS.title
+            layoutTabs.root.visibility = View.VISIBLE
+        }
 
         demoCollectionAdapter = DemoCollectionAdapter(this)
         binding.layoutTabs.viewPager.adapter = demoCollectionAdapter
         val tab = binding.layoutTabs.tabLayout1.getTabAt(0)
 
-        // Get badge from tab (or create one if none exists)
-        val badge = tab?.orCreateBadge?.apply {
-            // Customize badge
-            number = number
-            // Remove badge from tab
-            tab.removeBadge()
-            setContentDescriptionNumberless("contentDescription")
-            setContentDescriptionQuantityStringsResource(R.plurals.tab_layout_1)
-            setContentDescriptionExceedsMaxBadgeNumberStringResource(R.string.app_name)
-        }
-
         binding.layoutTabs.tabLayout1.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                // Handle tab select
+                if (null != tab?.badge) tab.removeBadge()
+                binding.layoutResult.tvResult.text = "${tab?.text.toString().capFirstChar()} Selected"
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                // Handle tab reselect
+                binding.layoutResult.tvResult.text = "${tab?.text.toString().capFirstChar()} Reselected"
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                // Handle tab unselect
+                binding.layoutResult.tvResult.text = "${tab?.text.toString().capFirstChar()} Unselected"
             }
         })
 
@@ -924,15 +1300,26 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             for (i in 1..10) {
                 tab.text = "tab ${position + 1}"
                 tab.icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_alternate_email_24)
+                if (position == 2 || position == 7) {
+                    // Get badge from tab (or create one if none exists)
+                    tab.orCreateBadge.apply {
+                        number = 99
+                        setContentDescriptionNumberless("contentDescription")
+                        setContentDescriptionQuantityStringsResource(R.plurals.tab_layout_1)
+                        setContentDescriptionExceedsMaxBadgeNumberStringResource(R.string.app_name)
+                    }
+                }
             }
         }.attach()
     }
 
     private fun setUpTextFields() {
-        binding.toolbar.title = TEXT_FIELDS.title
-        binding.layoutTextFields.root.visibility = View.VISIBLE
-        val professionAdapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.professionArray)
-        val hobbyAdapter = ArrayAdapter(myContext, R.layout.list_item_custom_array_adapter, Constants.hobbyArray)
+        binding.apply {
+            toolbar.title = TEXT_FIELDS.title
+            layoutTextFields.root.visibility = View.VISIBLE
+        }
+        val professionAdapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.professionList)
+        val hobbyAdapter = ArrayAdapter(myContext, R.layout.list_item_custom_array_adapter, Constants.hobbyList)
         (binding.layoutTextFields.etProfession.editText as? AutoCompleteTextView)?.setAdapter(professionAdapter)
         (binding.layoutTextFields.etHobby.editText as? AutoCompleteTextView)?.setAdapter(hobbyAdapter)
         binding.layoutTextFields.etName.editText?.addTextChangedListener(afterTextChanged = { it: Editable? ->
@@ -971,8 +1358,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpTimePickers() {
-        binding.toolbar.title = TIME_PICKERS.title
-        binding.layoutTimePickers.root.visibility = View.VISIBLE
+        binding.apply {
+            toolbar.title = TIME_PICKERS.title
+            layoutTimePickers.root.visibility = View.VISIBLE
+        }
         val clockFormat = if (is24HourFormat(myContext)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         binding.layoutTimePickers.btnTimePicker.setOnClickListener {
             val timePicker = MaterialTimePicker.Builder()

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/item_preview"
+        android:icon="@drawable/ic_baseline_remove_red_eye_24"
+        android:title="Preview"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_share"
+        android:icon="@drawable/ic_baseline_person_add_24"
+        android:title="Share"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_get_link"
+        android:icon="@drawable/ic_baseline_link_24"
+        android:title="Get Link"
+        app:showAsAction="withText" />
+</menu>
