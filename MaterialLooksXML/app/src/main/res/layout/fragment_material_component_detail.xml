@@ -8,6 +8,7 @@
     <!-- tools:openDrawer="start"-->
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -54,6 +55,14 @@
                         layout="@layout/layout_result" />
 
                     <include
+                        android:id="@+id/layout_chips"
+                        layout="@layout/layout_chips" />
+
+                    <include
+                        android:id="@+id/layout_data_tables"
+                        layout="@layout/layout_data_tables" />
+
+                    <include
                         android:id="@+id/layout_date_pickers"
                         layout="@layout/layout_date_pickers" />
 
@@ -64,6 +73,14 @@
                     <include
                         android:id="@+id/layout_dividers"
                         layout="@layout/layout_dividers" />
+
+                    <include
+                        android:id="@+id/layout_image_lists"
+                        layout="@layout/layout_image_lists" />
+
+                    <include
+                        android:id="@+id/layout_lists"
+                        layout="@layout/layout_lists" />
 
                     <include
                         android:id="@+id/layout_menus"
@@ -90,6 +107,10 @@
                         layout="@layout/layout_sheets_bottom" />
 
                     <include
+                        android:id="@+id/layout_sheets_side"
+                        layout="@layout/layout_sheets_side" />
+
+                    <include
                         android:id="@+id/layout_sliders"
                         layout="@layout/layout_sliders" />
 
@@ -108,6 +129,10 @@
                     <include
                         android:id="@+id/layout_text_fields"
                         layout="@layout/layout_text_fields" />
+
+                    <include
+                        android:id="@+id/layout_tooltips"
+                        layout="@layout/layout_tooltips" />
 
                     <include
                         android:id="@+id/layout_time_pickers"

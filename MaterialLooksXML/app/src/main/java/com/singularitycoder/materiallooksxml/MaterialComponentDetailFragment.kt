@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -53,14 +55,13 @@ import com.singularitycoder.materiallooksxml.dialogs.Person
 import com.singularitycoder.materiallooksxml.sheetsbottom.ModalBottomSheetDialogFragment
 import com.singularitycoder.materiallooksxml.tabs.DemoCollectionAdapter
 import com.singularitycoder.materiallooksxml.tabs.DummyFragment
+import java.security.SecureRandom
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
-    private lateinit var demoCollectionAdapter: DemoCollectionAdapter
     private lateinit var myContext: Context
     private lateinit var myActivity: MainActivity
     private lateinit var binding: FragmentMaterialComponentDetailBinding
@@ -167,20 +168,26 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     private fun setUpDefaults() {
         binding.apply {
+            layoutChips.root.visibility = View.GONE
+            layoutDataTables.root.visibility = View.GONE
             layoutDatePickers.root.visibility = View.GONE
             layoutDialogs.root.visibility = View.GONE
             layoutDividers.root.visibility = View.GONE
+            layoutImageLists.root.visibility = View.GONE
+            layoutLists.root.visibility = View.GONE
             layoutMenus.root.visibility = View.GONE
             layoutNavigationDrawers.root.visibility = View.GONE
             layoutNavigationRail.root.visibility = View.GONE
             layoutProgressIndicators.root.visibility = View.GONE
             layoutRadioButtons.root.visibility = View.GONE
             layoutSheetsBottom.root.visibility = View.GONE
+            layoutSheetsSide.root.visibility = View.GONE
             layoutSliders.root.visibility = View.GONE
             layoutSnackbars.root.visibility = View.GONE
             layoutSwitches.root.visibility = View.GONE
             layoutTabs.root.visibility = View.GONE
             layoutTextFields.root.visibility = View.GONE
+            layoutTooltips.root.visibility = View.GONE
             layoutTimePickers.root.visibility = View.GONE
         }
         binding.root.setOnClickListener { }
@@ -193,26 +200,33 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         when (component.title) {
             APP_BAR_BOTTOM.title -> setUpAppBarBottom()
             APP_BAR_TOP.title -> setUpAppBarTop()
+            BACKDROP.title -> setUpBackdrop()
+            BANNERS.title -> setUpBanners()
             BOTTOM_NAVIGATION.title -> setUpBottomNavigation()
             BUTTONS.title -> setUpButtons()
             FLOATING_ACTION_BUTTON.title -> setUpFloatingActionButton()
             CARDS.title -> setUpCards()
             CHECK_BOXES.title -> setUpCheckBoxes()
             CHIPS.title -> setUpChips()
+            DATA_TABLES.title -> setUpDataTables()
             DATE_PICKERS.title -> setUpDatePickers()
             DIALOGS.title -> setUpDialogs()
             DIVIDERS.title -> setUpDividers()
+            IMAGE_LISTS.title -> setUpImageLists()
+            LISTS.title -> setUpLists()
             MENUS.title -> setUpMenus()
             NAVIGATION_DRAWER.title -> setUpNavigationDrawer()
             NAVIGATION_RAIL.title -> setUpNavigationRail()
             PROGRESS_INDICATORS.title -> setUpProgressIndicators()
             RADIO_BUTTONS.title -> setUpRadioButtons()
             SHEETS_BOTTOM.title -> setUpSheetsBottom()
+            SHEETS_SIDE.title -> setUpSheetsSide()
             SLIDERS.title -> setUpSliders()
             SNACKBARS.title -> setUpSnackbars()
             SWITCHES.title -> setUpSwitches()
             TABS.title -> setUpTabs()
             TEXT_FIELDS.title -> setUpTextFields()
+            TOOLTIPS.title -> setUpTooltips()
             TIME_PICKERS.title -> setUpTimePickers()
         }
     }
@@ -225,6 +239,14 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         binding.toolbar.title = APP_BAR_TOP.title
     }
 
+    private fun setUpBackdrop() {
+        binding.toolbar.title = BACKDROP.title
+    }
+
+    private fun setUpBanners() {
+        binding.toolbar.title = BANNERS.title
+    }
+
     private fun setUpBottomNavigation() {
         binding.toolbar.title = BOTTOM_NAVIGATION.title
     }
@@ -234,6 +256,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpFloatingActionButton() {
+        // life fab when snackbar shown
         binding.toolbar.title = FLOATING_ACTION_BUTTON.title
     }
 
@@ -246,7 +269,39 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpChips() {
-        binding.toolbar.title = CHIPS.title
+        // Input Chips - any number - like entering hash tags in twitter (OR) adding recipients in gmail. They have delete option
+        // Choice Chips - single choice - veg, non-veg, both (OR) small, medium, large, extra-large
+        // Filter Chips - multiple choice - filter stuff while shopping in amazon
+        // Action Chips - these are just buttons/switches with an icon and rounded corners with on/off states
+
+        // Action Chips with progress bar inside
+        // Chips allow users to enter information, make selections, filter content, or trigger actions.
+
+        binding.apply {
+            toolbar.title = CHIPS.title
+            layoutChips.root.visibility = View.VISIBLE
+        }
+
+        binding.layoutChips.chip.setOnClickListener {
+            binding.layoutResult.tvResult.text = "Chip Selected"
+        }
+
+        binding.layoutChips.chip.setOnCloseIconClickListener {
+            binding.layoutResult.tvResult.text = "Chip Closed"
+        }
+
+        // Not Selected
+        binding.layoutChips.chip.setOnCheckedChangeListener { chip, isChecked ->
+            Snackbar.make(binding.coordinatorLayoutRoot, if (isChecked) "Chip Selected" else "Chip Unselected", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setUpDataTables() {
+        binding.apply {
+            toolbar.title = DATA_TABLES.title
+            layoutDataTables.root.visibility = View.VISIBLE
+            layoutResult.tvResult.text = "Data Tables missing in Material library"
+        }
     }
 
     private fun setUpDatePickers() {
@@ -260,22 +315,59 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             layoutDatePickers.root.visibility = View.VISIBLE
         }
 
+        fun giveCalendarConstraintBuilder(): CalendarConstraints.Builder {
+            // https://www.youtube.com/watch?v=m3yj7JaTTPI
+            val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+            calendar.clear()
+
+            val today = MaterialDatePicker.todayInUtcMilliseconds()
+            calendar.timeInMillis = today
+
+            calendar.set(Calendar.MONTH, Calendar.JANUARY)
+            val january = calendar.timeInMillis
+
+            calendar.set(Calendar.MONTH, Calendar.MARCH)
+            val defaultMonth = calendar.timeInMillis
+
+            calendar.set(Calendar.MONTH, Calendar.DECEMBER)
+            val december = calendar.timeInMillis
+
+            return CalendarConstraints.Builder().apply {
+                setValidator(DateValidatorPointForward.now())   // disables all previous dates until today
+//                setValidator(DateValidatorWeekdays())   // disables all weekdays
+//                setValidator(DateValidatorPointForward.from(defaultMonth))    // disables all dates from march
+                setOpenAt(defaultMonth) // With this calendar always opens at March month instead of device date
+                setStart(january)
+                setEnd(december)
+            }
+        }
+
         fun showDatePicker(type: UByte = 0u) {
-            if (type.toInt() > 1) {
+            if (type.toInt() > 2) {
                 showDatePicker(type = 0u)
                 return
             }
-            val datePicker = if (type.toInt() == 0) {
-                MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select date")
-                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
-                    .build()
-            } else {
-                MaterialDatePicker.Builder.datePicker()
-                    .setTitleText("Select date")
-                    .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
-                    .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
-                    .build()
+            val datePicker = when (type.toInt()) {
+                0 -> {
+                    MaterialDatePicker.Builder.datePicker()
+                        .setTitleText("Select date")
+                        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
+                        .build()
+                }
+                1 -> {
+                    MaterialDatePicker.Builder.datePicker()
+                        .setTitleText("Select date")
+                        .setCalendarConstraints(giveCalendarConstraintBuilder().build())
+                        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
+                        .build()
+                }
+                else -> {
+                    MaterialDatePicker.Builder.datePicker()
+                        .setTitleText("Select date")
+                        .setSelection(MaterialDatePicker.todayInUtcMilliseconds())  // Opens the date picker with today's date selected.
+                        .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
+                        .build()
+                }
             }
             datePicker.show(myActivity.supportFragmentManager, "TAG_DATE_PICKER")
             datePicker.apply {
@@ -289,21 +381,31 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         }
 
         fun showDateRangePicker(type: UByte = 0u) {
-            if (type.toInt() > 1) {
+            if (type.toInt() > 2) {
                 showDateRangePicker(type = 0u)
                 return
             }
-            val dateRangePicker = if (type.toInt() == 0) {
-                MaterialDatePicker.Builder.dateRangePicker()
-                    .setTitleText("Select dates")
-                    .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
-                    .build()
-            } else {
-                MaterialDatePicker.Builder.dateRangePicker()
-                    .setTitleText("Select dates")
-                    .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
-                    .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
-                    .build()
+            val dateRangePicker = when (type.toInt()) {
+                0 -> {
+                    MaterialDatePicker.Builder.dateRangePicker()
+                        .setTitleText("Select dates")
+                        .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
+                        .build()
+                }
+                1 -> {
+                    MaterialDatePicker.Builder.dateRangePicker()
+                        .setTitleText("Select dates")
+                        .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
+                        .setCalendarConstraints(giveCalendarConstraintBuilder().build())
+                        .build()
+                }
+                else -> {
+                    MaterialDatePicker.Builder.dateRangePicker()
+                        .setTitleText("Select dates")
+                        .setSelection(Pair(first = MaterialDatePicker.thisMonthInUtcMilliseconds(), second = MaterialDatePicker.todayInUtcMilliseconds()).toAndroidXPair())
+                        .setInputMode(MaterialDatePicker.INPUT_MODE_TEXT)
+                        .build()
+                }
             }
             dateRangePicker.show(myActivity.supportFragmentManager, "TAG_DATE_RANGE_PICKER")
             dateRangePicker.apply {
@@ -314,28 +416,20 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                         convertLongToTime(time = it?.second ?: return@addOnPositiveButtonClickListener, type = 3u)
                     }"
                 }
-                addOnNegativeButtonClickListener {
-                    binding.layoutResult.tvResult.text = "You cancelled"
-                }
+                addOnNegativeButtonClickListener { binding.layoutResult.tvResult.text = "You cancelled" }
             }
         }
 
         binding.layoutDatePickers.apply {
-            btnDatePicker.setOnClickListener {
-                showDatePicker()
-            }
-            btnDateInputPicker.setOnClickListener {
-                showDatePicker(type = 1u)
-            }
+            btnDatePicker.setOnClickListener { showDatePicker() }
+            btnDatePickerConstraints.setOnClickListener { showDatePicker(type = 1u) }
+            btnDateInputPicker.setOnClickListener { showDatePicker(type = 2u) }
         }
 
         binding.layoutDatePickers.apply {
-            btnDateRangePicker.setOnClickListener {
-                showDateRangePicker()
-            }
-            btnDateRangeInputPicker.setOnClickListener {
-                showDateRangePicker(type = 1u)
-            }
+            btnDateRangePicker.setOnClickListener { showDateRangePicker() }
+            btnDateRangePickerConstraints.setOnClickListener { showDateRangePicker(type = 1u) }
+            btnDateRangeInputPicker.setOnClickListener { showDateRangePicker(type = 2u) }
         }
     }
 
@@ -351,11 +445,13 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             layoutDialogs.root.visibility = View.VISIBLE
         }
 
-        fun showThemedAlertDialog(@StyleRes theme: Int) {
+        fun showThemedAlertDialog(@StyleRes theme: Int, showIcon: Boolean = true, roundCorners: Boolean = true) {
             MaterialAlertDialogBuilder(myContext, theme).apply {
                 setCancelable(false)
+                if (showIcon) setIcon(R.drawable.ic_baseline_info_24)
                 setTitle("Alert Dialog")
                 setMessage(resources.getString(R.string.long_message))
+                if (roundCorners) background = ContextCompat.getDrawable(myContext, R.drawable.alert_dialog_bg)
                 setNegativeButton("Decline") { dialog, which -> binding.layoutResult.tvResult.text = "You declined" }
                 setPositiveButton("Accept") { dialog, which -> binding.layoutResult.tvResult.text = "You accepted" }
                 setNeutralButton("Cancel") { dialog, which -> binding.layoutResult.tvResult.text = "You cancelled" }
@@ -411,10 +507,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.layoutDialogs.apply {
             btnShowAlertDialog.setOnClickListener {
-                showThemedAlertDialog(theme = R.style.ThemeOverlay_MaterialComponents_Dialog)
+                showThemedAlertDialog(theme = R.style.ThemeOverlay_MaterialComponents_Dialog, showIcon = false, roundCorners = false)
             }
             btnShowThemedAlertDialog.setOnClickListener {
-                showThemedAlertDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog_Alert)
+                showThemedAlertDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog_Alert, showIcon = false, roundCorners = false)
             }
             btnShowFixedSizeAlertDialog.setOnClickListener {
                 showThemedAlertDialog(theme = R.style.Theme_MaterialComponents_DayNight_Dialog_FixedSize)
@@ -474,6 +570,22 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         }
     }
 
+    private fun setUpImageLists() {
+        binding.apply {
+            toolbar.title = IMAGE_LISTS.title
+            layoutImageLists.root.visibility = View.VISIBLE
+            layoutResult.tvResult.text = "Image Lists missing in Material library"
+        }
+    }
+
+    private fun setUpLists() {
+        binding.apply {
+            toolbar.title = LISTS.title
+            layoutLists.root.visibility = View.VISIBLE
+            layoutResult.tvResult.text = "Lists missing in Material library"
+        }
+    }
+
     private fun setUpMenus() {
         // Drop Down menus
         // Text and Icon list
@@ -522,7 +634,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                     }
                 }
                 setOnDismissListener { it: PopupMenu? ->
-                    showSnackBar(view = binding.root, message = R.string.custom_popup_dismiss, duration = Snackbar.LENGTH_SHORT)
+                    showSnackBar(view = binding.coordinatorLayoutRoot, message = R.string.custom_popup_dismiss, duration = Snackbar.LENGTH_SHORT)
                 }
                 setMarginBtwMenuIconAndText(context = myContext, menu = this.menu, iconMarginDp = 16)
                 this.menu.forEach { it: MenuItem ->
@@ -901,7 +1013,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                     // This method is called after "MAX_DURATION_IN_MILLIS" duration is complete
                     hideLinearIndicators()
                     hideCircularIndicators()
-                    showSnackBar(view = binding.root, message = R.string.finished_downloading, duration = Snackbar.LENGTH_SHORT)
+                    showSnackBar(view = binding.coordinatorLayoutRoot, message = R.string.finished_downloading, duration = Snackbar.LENGTH_SHORT)
                 }
             }.start()
         }
@@ -950,7 +1062,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         binding.layoutRadioButtons.rbCustom.apply {
             setOnCheckedChangeListener { buttonView, isChecked ->
                 if (isChecked) {
-                    showSnackBar(view = binding.layoutRadioButtons.root, message = R.string.custom_radio_message, duration = Snackbar.LENGTH_SHORT)
+                    showSnackBar(view = binding.coordinatorLayoutRoot, message = R.string.custom_radio_message, duration = Snackbar.LENGTH_SHORT)
                     setTextColor(ContextCompat.getColorStateList(myContext, R.color.purple_500))
                     buttonTintList = ContextCompat.getColorStateList(myContext, R.color.purple_500)
                     buttonDrawable = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_sentiment_very_satisfied_24)
@@ -1105,6 +1217,14 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 //        bottomSheetBehavior.setUpdateImportantForAccessibilityOnSiblings()
     }
 
+    private fun setUpSheetsSide() {
+        binding.apply {
+            toolbar.title = SHEETS_SIDE.title
+            layoutSheetsSide.root.visibility = View.VISIBLE
+            layoutResult.tvResult.text = "Side Sheets missing in Material library"
+        }
+    }
+
     private fun setUpSliders() {
         binding.apply {
             toolbar.title = SLIDERS.title
@@ -1189,26 +1309,28 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpSnackbars() {
+        // Setting coordinator layout as root view allows user to dismiss snackbar by swiping to the right
         binding.apply {
             toolbar.title = SNACKBARS.title
             layoutSnackbars.root.visibility = View.VISIBLE
         }
         binding.layoutSnackbars.apply {
-            btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.root, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
+            btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.coordinatorLayoutRoot, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
             btnSnackBarAction.setOnClickListener {
-                Snackbar.make(binding.root, "Email deleted!", Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.coordinatorLayoutRoot, "Email deleted!", Snackbar.LENGTH_LONG)
                     .setAction("UNDO") { binding.layoutResult.tvResult.text = "You undid email deletion!" }
                     .show()
             }
             btnSnackBarWithLongText.setOnClickListener {
                 Snackbar.make(
-                    binding.root,
+                    binding.coordinatorLayoutRoot,
                     "Email must contain only @. as special characters. Otherwise hackers can bust your email. You will then cry like a baby. So be careful!",
                     Snackbar.LENGTH_INDEFINITE
                 ).setAction("DON'T TELL ME AGAIN") { binding.layoutResult.tvResult.text = "\"DON'T TELL ME AGAIN\" Clicked!" }.show()
             }
             btnSnackBarCustom.setOnClickListener {
-                Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(binding.coordinatorLayoutRoot, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
+                    .setDuration(10_000)    // Even if its indefinite sncakbar disappears after 10 sec
                     .setAction("OK") { binding.layoutResult.tvResult.text = "You got it!" }
                     .setBackgroundTint(ContextCompat.getColor(myContext, R.color.teal_100))
                     .setAnimationMode(BaseTransientBottomBar.ANIMATION_MODE_SLIDE)
@@ -1217,7 +1339,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                     .show()
             }
             btnSnackBarCustomPosition.setOnClickListener {
-                Snackbar.make(binding.root, "I am at a different place than usual. How strange!", Snackbar.LENGTH_LONG)
+                Snackbar.make(binding.coordinatorLayoutRoot, "I am at a different place than usual. How strange!", Snackbar.LENGTH_LONG)
                     .setAnchorView(btnSnackBarSimple)
                     .show()
             }
@@ -1271,15 +1393,15 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // collapse toolbar
         // collapse toolbar & tabs
         // tabs with notification badges
+        // Add new tab dynamically
 
         binding.apply {
             toolbar.title = TABS.title
             layoutTabs.root.visibility = View.VISIBLE
         }
 
-        demoCollectionAdapter = DemoCollectionAdapter(this)
+        val demoCollectionAdapter = DemoCollectionAdapter(this)
         binding.layoutTabs.viewPager.adapter = demoCollectionAdapter
-        val tab = binding.layoutTabs.tabLayout1.getTabAt(0)
 
         binding.layoutTabs.tabLayout1.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -1298,12 +1420,12 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         TabLayoutMediator(binding.layoutTabs.tabLayout1, binding.layoutTabs.viewPager) { tab, position ->
             for (i in 1..10) {
-                tab.text = "tab ${position + 1}"
-                tab.icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_alternate_email_24)
+                tab.text = "Inbox ${position + 1}"
+                tab.icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_email_24)
                 if (position == 2 || position == 7) {
                     // Get badge from tab (or create one if none exists)
                     tab.orCreateBadge.apply {
-                        number = 99
+                        number = SecureRandom().nextInt(1000)
                         setContentDescriptionNumberless("contentDescription")
                         setContentDescriptionQuantityStringsResource(R.plurals.tab_layout_1)
                         setContentDescriptionExceedsMaxBadgeNumberStringResource(R.string.app_name)
@@ -1311,6 +1433,62 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                 }
             }
         }.attach()
+
+        // Default tab selected
+        val tabCount = binding.layoutTabs.tabLayout1.tabCount
+        binding.layoutTabs.tabLayout1.getTabAt(if (tabCount > 3) 3 else 0)?.select()
+        binding.layoutTabs.viewPager.currentItem = 3
+
+        // How to add fragment?
+        binding.layoutTabs.btnAddTab.setOnClickListener {
+            val tab = binding.layoutTabs.tabLayout1.newTab().apply {
+                text = "Inbox ${binding.layoutTabs.tabLayout1.tabCount + 1}"
+                icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_alternate_email_24)
+            }
+            binding.layoutTabs.tabLayout1.apply {
+                addTab(tab, binding.layoutTabs.tabLayout1.tabCount, true)
+                getTabAt(binding.layoutTabs.tabLayout1.tabCount - 1)?.select()
+            }
+//            (binding.layoutTabs.viewPager.adapter as DemoCollectionAdapter).apply {
+//                createFragment(binding.layoutTabs.tabLayout1.tabCount)
+//                notifyItemInserted(binding.layoutTabs.tabLayout1.tabCount)
+//            }
+        }
+
+        binding.layoutTabs.btnRemoveTab.setOnClickListener {
+            if (binding.layoutTabs.tabLayout1.tabCount < 2) return@setOnClickListener
+
+            binding.layoutTabs.tabLayout1.apply {
+                removeTabAt(binding.layoutTabs.tabLayout1.tabCount - 1)
+                getTabAt(binding.layoutTabs.tabLayout1.tabCount - 1)?.select()
+            }
+        }
+
+        binding.layoutTabs.btnTabMode.setOnClickListener {
+            if (binding.layoutTabs.tabLayout1.tabMode == TabLayout.MODE_SCROLLABLE) {
+                binding.layoutTabs.tabLayout1.tabMode = TabLayout.MODE_FIXED
+                binding.layoutResult.tvResult.text = "Tab Mode Fixed"
+            } else {
+                binding.layoutTabs.tabLayout1.tabMode = TabLayout.MODE_SCROLLABLE
+                binding.layoutResult.tvResult.text = "Tab Mode Scrollable"
+            }
+        }
+
+        binding.layoutTabs.btnInlineLabel.setOnClickListener {
+            binding.layoutTabs.tabLayout1.isInlineLabel = !binding.layoutTabs.tabLayout1.isInlineLabel
+        }
+
+        binding.layoutTabs.btnShowHideIcon.setOnClickListener {
+            if (binding.layoutTabs.tabLayout1.getTabAt(0)?.icon == null) {
+                repeat(binding.layoutTabs.tabLayout1.tabCount) { position: Int ->
+                    binding.layoutTabs.tabLayout1.getTabAt(position)?.icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_email_24)
+                }
+            } else {
+                repeat(binding.layoutTabs.tabLayout1.tabCount) { position: Int ->
+                    binding.layoutTabs.tabLayout1.getTabAt(position)?.icon = null
+                }
+            }
+        }
     }
 
     private fun setUpTextFields() {
@@ -1328,11 +1506,8 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         })
         binding.layoutTextFields.etEmail.apply {
             setEndIconOnClickListener {
-                Snackbar.make(binding.root, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make(binding.coordinatorLayoutRoot, "Email must contain only @. as special characters!", Snackbar.LENGTH_INDEFINITE)
                     .setAction("GOT IT") { }
-                    .setBackgroundTint(ContextCompat.getColor(myContext, R.color.black))
-                    .setTextColor(ContextCompat.getColor(myContext, R.color.white))
-                    .setActionTextColor(ContextCompat.getColor(myContext, R.color.purple_200))
                     .show()
             }
             addOnEditTextAttachedListener { it: TextInputLayout ->
@@ -1355,6 +1530,14 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Programmatic Text Fields
         val textInputLayout = TextInputLayout(requireContext())
         val editText = TextInputEditText(textInputLayout.context)
+    }
+
+    private fun setUpTooltips() {
+        binding.apply {
+            toolbar.title = TOOLTIPS.title
+            layoutTooltips.root.visibility = View.VISIBLE
+            layoutResult.tvResult.text = "Tooltips missing in Material library"
+        }
     }
 
     private fun setUpTimePickers() {

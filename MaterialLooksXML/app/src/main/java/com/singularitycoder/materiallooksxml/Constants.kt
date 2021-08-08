@@ -38,6 +38,18 @@ enum class MaterialComponents(val image: Int, val title: String, val subTitle: S
         subTitle = "The top app bar displays information and actions relating to the current screen.",
         link = "https://material.io/components/app-bars-top/android"
     ),
+    BACKDROP(
+        image = R.drawable.backdrop,
+        title = "Backdrop",
+        subTitle = "A backdrop appears behind all other surfaces in an app, displaying contextual and actionable content.",
+        link = "https://material.io/components/backdrop/android"
+    ),
+    BANNERS(
+        image = R.drawable.banners,
+        title = "Banners",
+        subTitle = "A banner displays a prominent message and related optional actions.",
+        link = "https://material.io/components/banners/android"
+    ),
     BOTTOM_NAVIGATION(
         image = R.drawable.bottom_navigation,
         title = "Bottom navigation",
@@ -74,11 +86,17 @@ enum class MaterialComponents(val image: Int, val title: String, val subTitle: S
         subTitle = "Chips are compact elements that represent an input, attribute, or action.",
         link = "https://material.io/components/chips/android#using-chips"
     ),
+    DATA_TABLES(
+        image = R.drawable.data_tables,
+        title = "Data tables",
+        subTitle = "Data tables display sets of data across rows and columns.",
+        link = "https://material.io/components/data-tables/android"
+    ),
     DATE_PICKERS(
         image = R.drawable.date_pickers,
         title = "Date pickers",
         subTitle = "Date pickers let users select a date, or a range of dates.",
-        link = "https://material.io/components/date-pickers/android#using-date-pickers"
+        link = "https://material.io/components/date-pickers/android"
     ),
     DIALOGS(
         image = R.drawable.dialogs,
@@ -91,6 +109,18 @@ enum class MaterialComponents(val image: Int, val title: String, val subTitle: S
         title = "Dividers",
         subTitle = "A divider is a thin line that groups content in lists and layouts.",
         link = "https://material.io/components/dividers/android"
+    ),
+    IMAGE_LISTS(
+        image = R.drawable.image_lists,
+        title = "Image lists",
+        subTitle = "Image lists display a collection of images in an organized grid.",
+        link = "https://material.io/components/image-lists/android"
+    ),
+    LISTS(
+        image = R.drawable.lists,
+        title = "Lists",
+        subTitle = "Lists are continuous, vertical indexes of text or images.",
+        link = "https://material.io/components/lists/android"
     ),
     MENUS(
         image = R.drawable.menus,
@@ -128,6 +158,12 @@ enum class MaterialComponents(val image: Int, val title: String, val subTitle: S
         subTitle = "Bottom sheets are surfaces containing supplementary content that are anchored to the bottom of the screen.",
         link = "https://material.io/components/sheets-bottom/android"
     ),
+    SHEETS_SIDE(
+        image = R.drawable.sheets_side,
+        title = "Sheets: side",
+        subTitle = "Side sheets are surfaces containing supplementary content that are anchored to the left or right edge of the screen.",
+        link = "https://material.io/components/sheets-side/android"
+    ),
     SLIDERS(
         image = R.drawable.sliders,
         title = "Sliders",
@@ -157,6 +193,12 @@ enum class MaterialComponents(val image: Int, val title: String, val subTitle: S
         title = "Text fields",
         subTitle = "Text fields let users enter and edit text.",
         link = "https://material.io/components/text-fields/android"
+    ),
+    TOOLTIPS(
+        image = R.drawable.tooltips,
+        title = "Tooltips",
+        subTitle = "Tooltips display informative text when users hover over, focus on, or tap an element.",
+        link = "https://material.io/components/tooltips/android"
     ),
     TIME_PICKERS(
         image = R.drawable.time_pickers,

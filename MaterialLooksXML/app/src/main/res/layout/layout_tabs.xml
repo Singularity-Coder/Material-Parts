@@ -12,28 +12,42 @@
         android:layout_height="wrap_content"
         android:background="@color/purple_100"
         android:contentDescription="Tabs Layout 1"
-        app:tabMode="scrollable">
-        <!--        style="@style/Widget.App.TabLayout"-->
-
-        <!--        <com.google.android.material.tabs.TabItem-->
-        <!--            android:id="@+id/tab_1"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:contentDescription="Tab 1"-->
-        <!--            android:text="LABEL 1" />-->
-
-        <!--        <com.google.android.material.tabs.TabItem-->
-        <!--            android:id="@+id/tab_2"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:contentDescription="Tab 2"-->
-        <!--            android:text="LABEL 2" />-->
-
-    </com.google.android.material.tabs.TabLayout>
+        app:tabMode="scrollable" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
+    <Button
+        android:id="@+id/btn_add_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Add Tab" />
+
+    <Button
+        android:id="@+id/btn_remove_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove Tab" />
+
+    <Button
+        android:id="@+id/btn_tab_mode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Tab Mode" />
+
+    <Button
+        android:id="@+id/btn_inline_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Set Inline Label" />
+
+    <Button
+        android:id="@+id/btn_show_hide_icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Hide Icon" />
 </LinearLayout>

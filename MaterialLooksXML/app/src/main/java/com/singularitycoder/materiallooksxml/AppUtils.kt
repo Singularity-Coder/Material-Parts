@@ -57,7 +57,7 @@ fun convertDateToLong(date: String, type: UByte): Long {
     return try {
         if (dateFormat.parse(date) is Date) dateFormat.parse(date).time else convertDateToLong(date = Date().toString(), type = 3u)
     } catch (e: Exception) {
-        0
+        convertDateToLong(date = Date().toString(), type = 3u)
     }
 }
 
