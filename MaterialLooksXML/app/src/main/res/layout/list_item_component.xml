@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:background="@color/purple_200"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:transitionName="tn_material_image" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_title"

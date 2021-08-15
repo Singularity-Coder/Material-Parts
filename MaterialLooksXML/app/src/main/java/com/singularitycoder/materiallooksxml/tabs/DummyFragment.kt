@@ -7,9 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.singularitycoder.materiallooksxml.MainActivity
-import com.singularitycoder.materiallooksxml.R
-import com.singularitycoder.materiallooksxml.Route
+import com.singularitycoder.materiallooksxml.*
 import com.singularitycoder.materiallooksxml.databinding.FragmentDummyBinding
 
 class DummyFragment(val route: Route, val pageNumber: Int = 0) : Fragment() {
@@ -57,9 +55,9 @@ class DummyFragment(val route: Route, val pageNumber: Int = 0) : Fragment() {
         when (route) {
             Route.NONE -> Unit
             Route.TAB -> {
-                binding.tvDummy.visibility = View.VISIBLE
+                binding.tvDummy.visible()
                 binding.tvDummy.text = "Page $pageNumber"
-                binding.clDummyGrid.visibility = View.GONE
+                binding.clDummyGrid.gone()
             }
             Route.NAV_RAIL_RECENT -> {
                 clFlowItemList.forEachIndexed { index, item ->

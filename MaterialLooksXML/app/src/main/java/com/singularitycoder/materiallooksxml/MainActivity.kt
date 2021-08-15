@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             adapter = MaterialComponentAdapter(
                 materialComponentList = Constants.materialComponentList,
                 onComponentClick = { position: Int ->
+                    // Set shared element transition for Image, Title, Subtitle
                     val fragment = MaterialComponentDetailFragment(component = Constants.materialComponentList[position])
                     supportFragmentManager.beginTransaction().apply {
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -66,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                     ivImage.setImageResource(materialComponent.image)
                     tvTitle.text = materialComponent.title
                     tvSubTitle.text = materialComponent.subtitle
-                    tvLink.visibility = View.GONE
+                    tvLink.gone()
                     onComponentClick ?: return
                     root.setOnClickListener { onComponentClick.invoke(adapterPosition) }
                 }

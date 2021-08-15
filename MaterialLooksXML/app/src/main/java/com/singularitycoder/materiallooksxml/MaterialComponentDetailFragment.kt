@@ -7,9 +7,12 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
+import android.text.Spanned
 import android.text.format.DateFormat.is24HourFormat
+import android.text.style.ImageSpan
 import android.view.*
 import android.view.MenuItem.SHOW_AS_ACTION_WITH_TEXT
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.MenuRes
@@ -20,10 +23,12 @@ import androidx.core.util.Pair
 import androidx.core.util.toAndroidXPair
 import androidx.core.view.*
 import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -59,6 +64,7 @@ import java.security.SecureRandom
 import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
@@ -168,27 +174,27 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
     private fun setUpDefaults() {
         binding.apply {
-            layoutChips.root.visibility = View.GONE
-            layoutDataTables.root.visibility = View.GONE
-            layoutDatePickers.root.visibility = View.GONE
-            layoutDialogs.root.visibility = View.GONE
-            layoutDividers.root.visibility = View.GONE
-            layoutImageLists.root.visibility = View.GONE
-            layoutLists.root.visibility = View.GONE
-            layoutMenus.root.visibility = View.GONE
-            layoutNavigationDrawers.root.visibility = View.GONE
-            layoutNavigationRail.root.visibility = View.GONE
-            layoutProgressIndicators.root.visibility = View.GONE
-            layoutRadioButtons.root.visibility = View.GONE
-            layoutSheetsBottom.root.visibility = View.GONE
-            layoutSheetsSide.root.visibility = View.GONE
-            layoutSliders.root.visibility = View.GONE
-            layoutSnackbars.root.visibility = View.GONE
-            layoutSwitches.root.visibility = View.GONE
-            layoutTabs.root.visibility = View.GONE
-            layoutTextFields.root.visibility = View.GONE
-            layoutTooltips.root.visibility = View.GONE
-            layoutTimePickers.root.visibility = View.GONE
+            layoutChips.root.gone()
+            layoutDataTables.root.gone()
+            layoutDatePickers.root.gone()
+            layoutDialogs.root.gone()
+            layoutDividers.root.gone()
+            layoutImageLists.root.gone()
+            layoutLists.root.gone()
+            layoutMenus.root.gone()
+            layoutNavigationDrawers.root.gone()
+            layoutNavigationRail.root.gone()
+            layoutProgressIndicators.root.gone()
+            layoutRadioButtons.root.gone()
+            layoutSheetsBottom.root.gone()
+            layoutSheetsSide.root.gone()
+            layoutSliders.root.gone()
+            layoutSnackbars.root.gone()
+            layoutSwitches.root.gone()
+            layoutTabs.root.gone()
+            layoutTextFields.root.gone()
+            layoutTooltips.root.gone()
+            layoutTimePickers.root.gone()
         }
         binding.root.setOnClickListener { }
         binding.layoutHeader.apply {
@@ -279,27 +285,68 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = CHIPS.title
-            layoutChips.root.visibility = View.VISIBLE
+            layoutChips.root.visible()
         }
 
-        binding.layoutChips.chip.setOnClickListener {
-            binding.layoutResult.tvResult.text = "Chip Selected"
+        // RTL-friendly chip layout
+        binding.layoutChips.chip.apply {
+            layoutDirection = View.LAYOUT_DIRECTION_LOCALE
+            setOnClickListener {
+                binding.layoutResult.tvResult.text = "Chip Selected"
+            }
+            setOnCloseIconClickListener {
+                binding.layoutResult.tvResult.text = "Chip Closed"
+            }
+            // Not Selected
+            setOnCheckedChangeListener { chip, isChecked ->
+                Snackbar.make(binding.coordinatorLayoutRoot, if (isChecked) "Chip Selected" else "Chip Unselected", Snackbar.LENGTH_SHORT).show()
+            }
         }
 
-        binding.layoutChips.chip.setOnCloseIconClickListener {
-            binding.layoutResult.tvResult.text = "Chip Closed"
+        val checkedChipId = binding.layoutChips.chipGroupMultiRow.checkedChipId // Returns View.NO_ID if singleSelection = false
+        val checkedChipIds = binding.layoutChips.chipGroupMultiRow.checkedChipIds // Returns a list of the selected chips' IDs, if any
+
+        binding.layoutChips.chipGroupMultiRow.setOnCheckedChangeListener { group, checkedId ->
+            // Responds to child chip checked/unchecked
         }
 
-        // Not Selected
-        binding.layoutChips.chip.setOnCheckedChangeListener { chip, isChecked ->
-            Snackbar.make(binding.coordinatorLayoutRoot, if (isChecked) "Chip Selected" else "Chip Unselected", Snackbar.LENGTH_SHORT).show()
+        var spannedLength = 0
+        val chipLength = 4
+        var textOnTextChanged = ""
+
+        // Input Chips - hashtags, gmail recipients
+        fun addInputChip(enteredText: String) {
+//            if (enteredText.length - abs(spannedLength) != abs(chipLength)) return
+            val chipDrawable = ChipDrawable.createFromResource(myContext, R.xml.item_chip).apply {
+                text = binding.layoutChips.etEmail.editText?.text
+                setBounds(0, 0, this.intrinsicWidth, this.intrinsicHeight)
+            }
+            val imageSpan = ImageSpan(chipDrawable)
+            val text = binding.layoutChips.etEmail.editText?.text
+            text?.setSpan(imageSpan, 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//            spannedLength = enteredText.length
+        }
+
+        // https://stackoverflow.com/questions/50574943/how-to-add-chips-from-material-components-library-to-input-field-in-android
+        binding.layoutChips.etEmail.editText?.setOnTextChanged { it: String ->
+//            if (it.length == (spannedLength - chipLength)) spannedLength = it.length
+        }
+        binding.layoutChips.etEmail.editText?.doAfterTextChanged { it: Editable? ->
+//            if (it?.length ?: 0 > 15 )
+//            addInputChip(enteredText = it.toString())
+            textOnTextChanged = it.toString()
+        }
+
+        binding.layoutChips.etEmail.editText?.setOnEditorActionListener { v, actionId, event ->
+            addInputChip(enteredText = textOnTextChanged)
+            actionId == EditorInfo.IME_ACTION_DONE
         }
     }
 
     private fun setUpDataTables() {
         binding.apply {
             toolbar.title = DATA_TABLES.title
-            layoutDataTables.root.visibility = View.VISIBLE
+            layoutDataTables.root.visible()
             layoutResult.tvResult.text = "Data Tables missing in Material library"
         }
     }
@@ -312,7 +359,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = DATE_PICKERS.title
-            layoutDatePickers.root.visibility = View.VISIBLE
+            layoutDatePickers.root.visible()
         }
 
         fun giveCalendarConstraintBuilder(): CalendarConstraints.Builder {
@@ -442,7 +489,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = DIALOGS.title
-            layoutDialogs.root.visibility = View.VISIBLE
+            layoutDialogs.root.visible()
         }
 
         fun showThemedAlertDialog(@StyleRes theme: Int, showIcon: Boolean = true, roundCorners: Boolean = true) {
@@ -565,7 +612,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = DIVIDERS.title
-            layoutDividers.root.visibility = View.VISIBLE
+            layoutDividers.root.visible()
             layoutResult.tvResult.text = "Dividers missing in Material library"
         }
     }
@@ -573,7 +620,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpImageLists() {
         binding.apply {
             toolbar.title = IMAGE_LISTS.title
-            layoutImageLists.root.visibility = View.VISIBLE
+            layoutImageLists.root.visible()
             layoutResult.tvResult.text = "Image Lists missing in Material library"
         }
     }
@@ -581,7 +628,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpLists() {
         binding.apply {
             toolbar.title = LISTS.title
-            layoutLists.root.visibility = View.VISIBLE
+            layoutLists.root.visible()
             layoutResult.tvResult.text = "Lists missing in Material library"
         }
     }
@@ -606,7 +653,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = MENUS.title
-            layoutMenus.root.visibility = View.VISIBLE
+            layoutMenus.root.visible()
         }
 
         // Register context menu for TextView
@@ -684,11 +731,11 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         }
 
         binding.apply {
-            layoutNavigationDrawers.root.visibility = View.VISIBLE
-            navigationDrawerModal.visibility = View.VISIBLE
-            bottomAppBar.visibility = View.VISIBLE
-            navigationDrawerBottom.visibility = View.VISIBLE
-            flScrim.visibility = View.GONE
+            layoutNavigationDrawers.root.visible()
+            navigationDrawerModal.visible()
+            bottomAppBar.visible()
+            navigationDrawerBottom.visible()
+            flScrim.gone()
         }
 
         fun onMenuItemClick(menuItem: MenuItem, isChecked: Boolean = true): Boolean {
@@ -701,10 +748,10 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         fun showHideBottomNavigationDrawer(bottomSheetBehavior: BottomSheetBehavior<NavigationView>) {
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                binding.flScrim.visibility = View.GONE
+                binding.flScrim.gone()
             } else {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                binding.flScrim.visibility = View.VISIBLE
+                binding.flScrim.visible()
             }
         }
 
@@ -761,13 +808,13 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             // Handle menu item selected
             onMenuItemClick(menuItem)
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            binding.flScrim.visibility = View.GONE
+            binding.flScrim.gone()
             true
         }
 
         binding.flScrim.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            binding.flScrim.visibility = View.GONE
+            binding.flScrim.gone()
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -785,7 +832,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                    binding.flScrim.visibility = View.GONE
+                    binding.flScrim.gone()
                 }
             }
         })
@@ -820,7 +867,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = NAVIGATION_RAIL.title
-            layoutNavigationRail.root.visibility = View.VISIBLE
+            layoutNavigationRail.root.visible()
         }
 
         fun loadFragment(fragment: Fragment?) {
@@ -906,7 +953,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = PROGRESS_INDICATORS.title
-            layoutProgressIndicators.root.visibility = View.VISIBLE
+            layoutProgressIndicators.root.visible()
         }
         var countDownTimer: CountDownTimer? = null
 
@@ -920,28 +967,28 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         fun hideLinearIndicators() {
             binding.layoutProgressIndicators.linearProgressIndicator.apply {
                 hideAnimationBehavior = BaseProgressIndicator.HIDE_INWARD
-                visibility = View.GONE
+                gone()
             }
         }
 
         fun hideCircularIndicators() {
             binding.layoutProgressIndicators.circularProgressIndicator.apply {
                 hideAnimationBehavior = BaseProgressIndicator.HIDE_INWARD
-                visibility = View.GONE
+                gone()
             }
         }
 
         fun showLinearIndicators() {
             binding.layoutProgressIndicators.linearProgressIndicator.apply {
                 showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
-                visibility = View.VISIBLE
+                visible()
             }
         }
 
         fun showCircularIndicators() {
             binding.layoutProgressIndicators.circularProgressIndicator.apply {
                 showAnimationBehavior = BaseProgressIndicator.SHOW_OUTWARD
-                visibility = View.VISIBLE
+                visible()
             }
         }
 
@@ -1033,7 +1080,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpRadioButtons() {
         binding.apply {
             toolbar.title = RADIO_BUTTONS.title
-            layoutRadioButtons.root.visibility = View.VISIBLE
+            layoutRadioButtons.root.visible()
         }
 
         binding.layoutRadioButtons.radioGroup.children.forEach { it: View ->
@@ -1135,8 +1182,8 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = SHEETS_BOTTOM.title
-            layoutSheetsBottom.root.visibility = View.VISIBLE
-            layoutPersistentBottomSheet.root.visibility = View.VISIBLE
+            layoutSheetsBottom.root.visible()
+            layoutPersistentBottomSheet.root.visible()
         }
 
         for (i in 1..20) {
@@ -1220,7 +1267,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpSheetsSide() {
         binding.apply {
             toolbar.title = SHEETS_SIDE.title
-            layoutSheetsSide.root.visibility = View.VISIBLE
+            layoutSheetsSide.root.visible()
             layoutResult.tvResult.text = "Side Sheets missing in Material library"
         }
     }
@@ -1228,7 +1275,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpSliders() {
         binding.apply {
             toolbar.title = SLIDERS.title
-            layoutSliders.root.visibility = View.VISIBLE
+            layoutSliders.root.visible()
         }
         binding.layoutSliders.sliderContinuous.apply {
             valueFrom = 0.0F
@@ -1312,7 +1359,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Setting coordinator layout as root view allows user to dismiss snackbar by swiping to the right
         binding.apply {
             toolbar.title = SNACKBARS.title
-            layoutSnackbars.root.visibility = View.VISIBLE
+            layoutSnackbars.root.visible()
         }
         binding.layoutSnackbars.apply {
             btnSnackBarSimple.setOnClickListener { Snackbar.make(binding.coordinatorLayoutRoot, "You clicked me!", Snackbar.LENGTH_SHORT).show() }
@@ -1350,7 +1397,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpSwitches() {
         binding.apply {
             toolbar.title = SWITCHES.title
-            layoutSwitches.root.visibility = View.VISIBLE
+            layoutSwitches.root.visible()
         }
         binding.layoutSwitches.apply {
             switchBasic.isChecked = false
@@ -1397,7 +1444,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
 
         binding.apply {
             toolbar.title = TABS.title
-            layoutTabs.root.visibility = View.VISIBLE
+            layoutTabs.root.visible()
         }
 
         val demoCollectionAdapter = DemoCollectionAdapter(this)
@@ -1494,7 +1541,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpTextFields() {
         binding.apply {
             toolbar.title = TEXT_FIELDS.title
-            layoutTextFields.root.visibility = View.VISIBLE
+            layoutTextFields.root.visible()
         }
         val professionAdapter = ArrayAdapter(myContext, android.R.layout.simple_list_item_1, Constants.professionList)
         val hobbyAdapter = ArrayAdapter(myContext, R.layout.list_item_custom_array_adapter, Constants.hobbyList)
@@ -1535,7 +1582,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpTooltips() {
         binding.apply {
             toolbar.title = TOOLTIPS.title
-            layoutTooltips.root.visibility = View.VISIBLE
+            layoutTooltips.root.visible()
             layoutResult.tvResult.text = "Tooltips missing in Material library"
         }
     }
@@ -1543,7 +1590,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     private fun setUpTimePickers() {
         binding.apply {
             toolbar.title = TIME_PICKERS.title
-            layoutTimePickers.root.visibility = View.VISIBLE
+            layoutTimePickers.root.visible()
         }
         val clockFormat = if (is24HourFormat(myContext)) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         binding.layoutTimePickers.btnTimePicker.setOnClickListener {

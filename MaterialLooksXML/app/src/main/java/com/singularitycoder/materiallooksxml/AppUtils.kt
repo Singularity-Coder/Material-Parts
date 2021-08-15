@@ -25,6 +25,14 @@ import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 
+fun View.visible() {
+    this.visibility = View.VISIBLE
+}
+
+fun View.gone() {
+    this.visibility = View.GONE
+}
+
 val dateFormatList = listOf(
     "dd-MMMM hh:mm",
     "dd-MM-yyyy",

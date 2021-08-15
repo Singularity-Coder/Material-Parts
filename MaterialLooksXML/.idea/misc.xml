@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/drawable/ic_baseline_message_24.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_baseline_remove_red_eye_24.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/drawable/ic_outline_person_24.xml" value="0.18958333333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_base.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/fragment_dummy.xml" value="0.19300911854103345" />
@@ -25,8 +26,9 @@
         <entry key="app/src/main/res/layout/header_navigation_drawer.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/header_navigation_rail.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/item_bottom_sheet.xml" value="0.13632246376811594" />
+        <entry key="app/src/main/res/layout/item_chip.xml" value="0.335" />
         <entry key="app/src/main/res/layout/layout_bottom_navigation_drawers.xml" value="0.19300911854103345" />
-        <entry key="app/src/main/res/layout/layout_chips.xml" value="0.19300911854103345" />
+        <entry key="app/src/main/res/layout/layout_chips.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_data_tables.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_date_pickers.xml" value="0.19300911854103345" />
         <entry key="app/src/main/res/layout/layout_dialogs.xml" value="0.335" />
