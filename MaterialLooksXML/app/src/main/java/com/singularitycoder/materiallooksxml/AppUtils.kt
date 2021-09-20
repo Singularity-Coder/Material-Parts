@@ -1,5 +1,6 @@
 package com.singularitycoder.materiallooksxml
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
@@ -8,11 +9,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.TimingLogger
 import android.util.TypedValue
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -60,7 +60,7 @@ fun convertLongToTime(time: Long, type: UByte): String {
 }
 
 fun convertDateToLong(date: String, type: UByte): Long {
-    if (date.trim().isBlank() || date.toLowCase().trim() == "null") return convertDateToLong(date = Date().toString(), type = 3u)
+    if (date.isNullOrBlankOrNullString()) return convertDateToLong(date = Date().toString(), type = 3u)
     val dateFormat = SimpleDateFormat(dateFormatList.getOrElse(index = type.toInt(), defaultValue = { dateFormatList[3] }), Locale.getDefault())
     return try {
         if (dateFormat.parse(date) is Date) dateFormat.parse(date).time else convertDateToLong(date = Date().toString(), type = 3u)
@@ -157,6 +157,11 @@ infix fun String.prefixWith(str: String): String = "$str$this"
 
 infix fun String.suffixWith(str: String): String = "$this$str"
 
+// isBlank trims n checks while isEmpty doesn't
+fun String?.isNullOrBlankOrNullString(): Boolean {
+    return this.isNullOrBlank() || "null" == this.toLowCase().trim()
+}
+
 fun TextView.showHideIcon(
     context: Context,
     showTick: Boolean,
@@ -214,6 +219,28 @@ fun showSnackBar(
         this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
         if (null != anchorView) this.anchorView = anchorView
         this.show()
+    }
+}
+
+fun Window?.enableScreenshot() = this?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+
+fun Window?.disableScreenshot() = this?.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+
+fun Window?.hasScreenshot(): Boolean = this?.hasFeature(WindowManager.LayoutParams.FLAG_SECURE) == true
+
+// Not working
+infix fun View.showScreenshotDisabledMessageIn(activity: Activity) {
+    this.apply {
+        isFocusableInTouchMode = true
+        requestFocus()
+        setOnKeyListener { v: View?, keyCode: Int, event: KeyEvent? ->
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN && event?.action == KeyEvent.KEYCODE_VOLUME_DOWN && event.action == KeyEvent.KEYCODE_POWER) {
+                if (activity.window.hasScreenshot()) {
+                    Toast.makeText(activity, "You are not allowed to take a screenshot!", Toast.LENGTH_LONG).show()
+                }
+                true
+            } else false
+        }
     }
 }
 

@@ -2,7 +2,6 @@ package com.singularitycoder.materiallooksxml
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -19,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.root showScreenshotDisabledMessageIn this
         setUpRecyclerView()
     }
 
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             adapter = MaterialComponentAdapter(
                 materialComponentList = Constants.materialComponentList,
                 onComponentClick = { position: Int ->
+                    window?.enableScreenshot()
                     // Set shared element transition for Image, Title, Subtitle
                     val fragment = MaterialComponentDetailFragment(component = Constants.materialComponentList[position])
                     supportFragmentManager.beginTransaction().apply {

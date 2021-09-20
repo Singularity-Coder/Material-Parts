@@ -65,7 +65,6 @@ import java.text.NumberFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragment() {
 
     private lateinit var myContext: Context
@@ -95,6 +94,11 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         super.onViewCreated(view, savedInstanceState)
         setUpToolbar()
         setUpDefaults()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activity?.window?.enableScreenshot()    // Not working
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -1490,7 +1494,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         binding.layoutTabs.btnAddTab.setOnClickListener {
             val tab = binding.layoutTabs.tabLayout1.newTab().apply {
                 text = "Inbox ${binding.layoutTabs.tabLayout1.tabCount + 1}"
-                icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_alternate_email_24)
+                icon = ContextCompat.getDrawable(myContext, R.drawable.ic_baseline_email_24)
             }
             binding.layoutTabs.tabLayout1.apply {
                 addTab(tab, binding.layoutTabs.tabLayout1.tabCount, true)
