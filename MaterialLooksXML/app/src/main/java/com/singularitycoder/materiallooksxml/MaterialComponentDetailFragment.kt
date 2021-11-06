@@ -266,7 +266,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
     }
 
     private fun setUpFloatingActionButton() {
-        // life fab when snackbar shown
+        // lift fab when snackbar shown
         binding.toolbar.title = FLOATING_ACTION_BUTTON.title
     }
 
@@ -644,7 +644,7 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
         // Text with selection state list
         // Disabled Actions
         // Scrollable menus
-        // Enterenace animation and no animation
+        // Enteranace animation and no animation
         // Cascading Menus
         // Contextual menu - actions are enabled or disabled based on condtions
         // Dividers
@@ -1287,13 +1287,8 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
             value = 10.0F   // starting value
             setLabelFormatter { value: Float -> "$value <<((" }
             addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: Slider) {
-                    // Responds to when slider's touch event is being started
-                }
-
-                override fun onStopTrackingTouch(slider: Slider) {
-                    // Responds to when slider's touch event is being stopped
-                }
+                override fun onStartTrackingTouch(slider: Slider) = Unit // Responds to when slider's touch event is being started
+                override fun onStopTrackingTouch(slider: Slider) = Unit // Responds to when slider's touch event is being stopped
             })
             addOnChangeListener { slider, value, fromUser ->
                 // Responds to when slider's value is changed
@@ -1312,13 +1307,8 @@ class MaterialComponentDetailFragment(val component: MaterialComponent) : Fragme
                 format.format(value.toDouble())
             }
             addOnSliderTouchListener(object : RangeSlider.OnSliderTouchListener {
-                override fun onStartTrackingTouch(slider: RangeSlider) {
-                    // Responds to when slider's touch event is being started
-                }
-
-                override fun onStopTrackingTouch(slider: RangeSlider) {
-                    // Responds to when slider's touch event is being stopped
-                }
+                override fun onStartTrackingTouch(slider: RangeSlider) = Unit // Responds to when slider's touch event is being started
+                override fun onStopTrackingTouch(slider: RangeSlider) = Unit // Responds to when slider's touch event is being stopped
             })
             addOnChangeListener { rangeSlider, value, fromUser ->
                 // Responds to when slider's value is changed

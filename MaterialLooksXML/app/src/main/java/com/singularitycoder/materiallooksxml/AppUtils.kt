@@ -25,6 +25,16 @@ import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 
+fun String?.getValueElseNa(): String = if (this.isNullOrBlankOrNaOrNullString()) "NA" else this!!
+
+fun View.enableIt() {
+    this.isEnabled = true
+}
+
+fun View.disableIt() {
+    this.isEnabled = false
+}
+
 fun View.visible() {
     this.visibility = View.VISIBLE
 }
@@ -60,7 +70,7 @@ fun convertLongToTime(time: Long, type: UByte): String {
 }
 
 fun convertDateToLong(date: String, type: UByte): Long {
-    if (date.isNullOrBlankOrNullString()) return convertDateToLong(date = Date().toString(), type = 3u)
+    if (date.isNullOrBlankOrNaOrNullString()) return convertDateToLong(date = Date().toString(), type = 3u)
     val dateFormat = SimpleDateFormat(dateFormatList.getOrElse(index = type.toInt(), defaultValue = { dateFormatList[3] }), Locale.getDefault())
     return try {
         if (dateFormat.parse(date) is Date) dateFormat.parse(date).time else convertDateToLong(date = Date().toString(), type = 3u)
@@ -158,8 +168,8 @@ infix fun String.prefixWith(str: String): String = "$str$this"
 infix fun String.suffixWith(str: String): String = "$this$str"
 
 // isBlank trims n checks while isEmpty doesn't
-fun String?.isNullOrBlankOrNullString(): Boolean {
-    return this.isNullOrBlank() || "null" == this.toLowCase().trim()
+fun String?.isNullOrBlankOrNaOrNullString(): Boolean {
+    return this.isNullOrBlank() || "null" == this.toLowCase().trim() || "na" == this.toLowCase().trim()
 }
 
 fun TextView.showHideIcon(
@@ -213,11 +223,14 @@ fun showSnackBar(
     view: View,
     @StringRes message: Int,
     anchorView: View? = null,
-    duration: Int = Snackbar.LENGTH_SHORT
+    duration: Int = Snackbar.LENGTH_SHORT,
+    actionBtnText: String = "NA",
+    action: () -> Unit = {}
 ) {
     Snackbar.make(view, message, duration).apply {
         this.animationMode = BaseTransientBottomBar.ANIMATION_MODE_SLIDE
         if (null != anchorView) this.anchorView = anchorView
+        if ("NA" != actionBtnText) setAction(actionBtnText) { action.invoke() }
         this.show()
     }
 }
@@ -226,7 +239,7 @@ fun Window?.enableScreenshot() = this?.clearFlags(WindowManager.LayoutParams.FLA
 
 fun Window?.disableScreenshot() = this?.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
 
-fun Window?.hasScreenshot(): Boolean = this?.hasFeature(WindowManager.LayoutParams.FLAG_SECURE) == true
+fun Window?.isScreenshotEnabled(): Boolean = this?.hasFeature(WindowManager.LayoutParams.FLAG_SECURE) == true
 
 // Not working
 infix fun View.showScreenshotDisabledMessageIn(activity: Activity) {
@@ -235,7 +248,7 @@ infix fun View.showScreenshotDisabledMessageIn(activity: Activity) {
         requestFocus()
         setOnKeyListener { v: View?, keyCode: Int, event: KeyEvent? ->
             if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN && event?.action == KeyEvent.KEYCODE_VOLUME_DOWN && event.action == KeyEvent.KEYCODE_POWER) {
-                if (activity.window.hasScreenshot()) {
+                if (activity.window.isScreenshotEnabled()) {
                     Toast.makeText(activity, "You are not allowed to take a screenshot!", Toast.LENGTH_LONG).show()
                 }
                 true
